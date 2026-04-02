@@ -4,11 +4,16 @@ export type PhotoSource = "upload" | "strava";
 
 export type SportType = "Run" | "TrailRun";
 
+export type StravaConnectionStatus = "active" | "revoked" | "disconnected";
+
 export interface StravaProfile {
   id: number;
+  username: string;
   firstname: string;
   lastname: string;
   city: string;
+  state: string;
+  country: string;
   profile: string;
   profileMedium: string;
   ytdKm: number;
@@ -31,10 +36,25 @@ export interface Member {
   yearKm: number;
   yearElevation: number;
   isAdmin: boolean;
+  stravaLastSyncAt: string | null;
 }
 
 export interface SessionMember extends Member {
   email: string;
+}
+
+export interface StravaConnection {
+  memberId: string;
+  athleteId: number | null;
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+  scopes: string[];
+  status: StravaConnectionStatus;
+  lastSyncAt: string | null;
+  lastWebhookAt: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface RaceModality {
@@ -147,4 +167,21 @@ export interface StravaActivity {
   startDateLocal: string;
   distance: number;
   elevationGain: number;
+}
+
+export interface StravaTokenExchange {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: number;
+  expiresIn: number;
+}
+
+export interface StravaWebhookEvent {
+  object_type: "activity" | "athlete";
+  object_id: number;
+  aspect_type: "create" | "update" | "delete";
+  updates?: Record<string, string>;
+  owner_id: number;
+  subscription_id: number;
+  event_time: number;
 }

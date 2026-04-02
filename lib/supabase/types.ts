@@ -26,6 +26,7 @@ export type Database = {
           photo_source: string;
           strava_athlete_id: number | null;
           strava_connected: boolean;
+          strava_last_sync_at: string | null;
           strava_photo: string;
           updated_at: string;
           upload_photo: string;
@@ -46,6 +47,7 @@ export type Database = {
           photo_source?: string;
           strava_athlete_id?: number | null;
           strava_connected?: boolean;
+          strava_last_sync_at?: string | null;
           strava_photo?: string;
           updated_at?: string;
           upload_photo?: string;
@@ -66,12 +68,55 @@ export type Database = {
           photo_source?: string;
           strava_athlete_id?: number | null;
           strava_connected?: boolean;
+          strava_last_sync_at?: string | null;
           strava_photo?: string;
           updated_at?: string;
           upload_photo?: string;
           user_id?: string;
           year_elevation?: number;
           year_km?: number;
+        };
+        Relationships: [];
+      };
+      strava_connections: {
+        Row: {
+          access_token: string;
+          athlete_id: number | null;
+          created_at: string;
+          expires_at: number;
+          last_sync_at: string | null;
+          last_webhook_at: string | null;
+          member_id: string;
+          refresh_token: string;
+          scopes: string[];
+          status: string;
+          updated_at: string;
+        };
+        Insert: {
+          access_token?: string;
+          athlete_id?: number | null;
+          created_at?: string;
+          expires_at?: number;
+          last_sync_at?: string | null;
+          last_webhook_at?: string | null;
+          member_id: string;
+          refresh_token?: string;
+          scopes?: string[];
+          status?: string;
+          updated_at?: string;
+        };
+        Update: {
+          access_token?: string;
+          athlete_id?: number | null;
+          created_at?: string;
+          expires_at?: number;
+          last_sync_at?: string | null;
+          last_webhook_at?: string | null;
+          member_id?: string;
+          refresh_token?: string;
+          scopes?: string[];
+          status?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };
@@ -118,8 +163,9 @@ export type Database = {
           last_name: string;
           member_number: string;
           photo_source: string;
-          strava_athlete_id: number;
+          strava_athlete_id: number | null;
           strava_connected: boolean;
+          strava_last_sync_at: string | null;
           strava_photo: string;
           upload_photo: string;
           year_elevation: number;

@@ -64,6 +64,17 @@ function SessionCard({ member }: { member: Member | null }) {
   );
 }
 
+function formatLastSync(value: string | null | undefined): string {
+  if (!value) {
+    return "Pendiente de sincronizar";
+  }
+
+  return new Intl.DateTimeFormat("es-ES", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
 export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -81,11 +92,11 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
     searchParams.get("strava_message") ||
     manualStravaStatus ||
     (activeMember?.stravaConnected
-      ? `Conectado con Strava como ${getDisplayName(activeMember)}.`
+      ? `Conectado con Strava como ${getDisplayName(activeMember)}. Ultima sincronizacion: ${formatLastSync(activeMember.stravaLastSyncAt)}.`
       : draftStravaProfile
         ? "Modo de prueba activado con conexion simulada para el registro."
         : activeMember
-          ? "Puedes conectar Strava real o simular la conexion para probar el flujo."
+          ? "Conecta Strava para importar foto, perfil y metricas del ano en curso."
           : "Crea tu perfil o usa la simulacion para precargar foto y metricas.");
 
   function refreshPage() {
@@ -203,6 +214,25 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
       refreshPage();
     } catch (error) {
       setSessionNote(error instanceof Error ? error.message : "No se pudo desconectar Strava.");
+    }
+  }
+
+  async function handleSyncStrava() {
+    if (!activeMember?.stravaConnected) {
+      setSessionNote("Conecta Strava antes de intentar sincronizar datos reales.");
+      return;
+    }
+
+    try {
+      const updatedMember = await requestJson<Member>("/api/app/profile/strava/sync", {
+        method: "POST",
+      });
+      setSessionNote(
+        `Datos de Strava actualizados. Ultima sincronizacion: ${formatLastSync(updatedMember.stravaLastSyncAt)}.`,
+      );
+      refreshPage();
+    } catch (error) {
+      setSessionNote(error instanceof Error ? error.message : "No se pudo sincronizar Strava.");
     }
   }
 
@@ -332,8 +362,8 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
                 <div>
                   <strong>Conectar con Strava</strong>
                   <p>
-                    El perfil del socio ya queda persistido en Supabase. Mientras tanto,
-                    puedes usar la simulacion para probar el alta y las validaciones de la liga.
+                    El perfil del socio ya queda persistido en Supabase y Strava pasa a ser
+                    la fuente de verdad para foto, kilometros y desnivel del ano.
                   </p>
                   <p className="strava-status">{stravaStatus}</p>
                 </div>
@@ -395,7 +425,15 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
             <div className="session-box">
               <p className="session-label">Sesion actual</p>
               <SessionCard member={displayMember} />
+              {activeMember?.stravaConnected ? (
+                <p className="form-note">
+                  Ultima sincronizacion de Strava: {formatLastSync(activeMember.stravaLastSyncAt)}
+                </p>
+              ) : null}
               <div className="session-actions">
+                <button className="button ghost-button" type="button" onClick={handleSyncStrava}>
+                  Actualizar Strava
+                </button>
                 <button className="button ghost-button" type="button" onClick={handleDisconnectStrava}>
                   Desconectar Strava
                 </button>

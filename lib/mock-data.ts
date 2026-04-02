@@ -27,9 +27,12 @@ export const MOCK_STRAVA_AVATAR =
 
 export const MOCK_STRAVA_PROFILE: StravaProfile = {
   id: 459274,
+  username: "leones-mock",
   firstname: "Leona",
   lastname: "Mock",
   city: "Madrid",
+  state: "Madrid",
+  country: "Spain",
   profile: MOCK_STRAVA_AVATAR,
   profileMedium: MOCK_STRAVA_AVATAR,
   ytdKm: 742.6,
@@ -53,6 +56,7 @@ export const seedMembers: Member[] = [
     yearKm: 1487.4,
     yearElevation: 25430,
     isAdmin: true,
+    stravaLastSyncAt: "2026-04-02T12:00:00.000Z",
   },
   {
     id: "seed-2",
@@ -70,6 +74,7 @@ export const seedMembers: Member[] = [
     yearKm: 1321.8,
     yearElevation: 21980,
     isAdmin: false,
+    stravaLastSyncAt: null,
   },
   {
     id: "seed-3",
@@ -87,6 +92,7 @@ export const seedMembers: Member[] = [
     yearKm: 1189.2,
     yearElevation: 18660,
     isAdmin: false,
+    stravaLastSyncAt: null,
   },
   {
     id: "seed-4",
@@ -104,6 +110,7 @@ export const seedMembers: Member[] = [
     yearKm: 1011.6,
     yearElevation: 16240,
     isAdmin: false,
+    stravaLastSyncAt: null,
   },
   {
     id: "seed-5",
@@ -121,6 +128,7 @@ export const seedMembers: Member[] = [
     yearKm: 1265.1,
     yearElevation: 20840,
     isAdmin: false,
+    stravaLastSyncAt: "2026-04-02T12:00:00.000Z",
   },
   {
     id: "seed-6",
@@ -138,6 +146,7 @@ export const seedMembers: Member[] = [
     yearKm: 1114.9,
     yearElevation: 19030,
     isAdmin: false,
+    stravaLastSyncAt: null,
   },
   {
     id: "seed-7",
@@ -155,6 +164,7 @@ export const seedMembers: Member[] = [
     yearKm: 963.7,
     yearElevation: 15410,
     isAdmin: false,
+    stravaLastSyncAt: null,
   },
   {
     id: "seed-8",
@@ -172,6 +182,7 @@ export const seedMembers: Member[] = [
     yearKm: 820.2,
     yearElevation: 13120,
     isAdmin: false,
+    stravaLastSyncAt: null,
   },
 ];
 

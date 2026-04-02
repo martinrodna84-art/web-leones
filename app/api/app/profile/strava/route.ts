@@ -2,7 +2,7 @@ import { failure, ok } from "@/lib/api";
 import {
   connectMockStrava,
   disconnectCurrentMemberStrava,
-} from "@/lib/member-service";
+} from "@/lib/strava-sync";
 
 export async function POST() {
   try {

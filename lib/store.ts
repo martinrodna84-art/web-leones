@@ -7,24 +7,15 @@ import type {
   RaceEventPayload,
   SessionMember,
   StravaActivity,
-  StravaProfile,
 } from "@/lib/types";
 
 import { seedRaceClaims, seedRaceEvents } from "@/lib/mock-data";
 import { getRacePointsFromModality, parseStravaActivityId, sameDate } from "@/lib/scoring";
-import { buildMockStravaActivity, fetchStravaActivityById } from "@/lib/strava";
-
-type StravaConnection = {
-  athlete: StravaProfile;
-  accessToken: string;
-  expiresAt: number;
-};
+import { getStravaActivityForMember } from "@/lib/strava-sync";
 
 type AppStore = {
   raceEvents: RaceEvent[];
   raceClaims: RaceClaim[];
-  stravaConnections: Map<string, StravaConnection>;
-  pendingStates: Map<string, { returnTo: string; createdAt: number }>;
 };
 
 let store: AppStore | null = null;
@@ -38,8 +29,6 @@ function getStore(): AppStore {
     store = {
       raceEvents: clone(seedRaceEvents),
       raceClaims: clone(seedRaceClaims),
-      stravaConnections: new Map<string, StravaConnection>(),
-      pendingStates: new Map<string, { returnTo: string; createdAt: number }>(),
     };
   }
 
@@ -83,48 +72,6 @@ export function listRaceEvents(): RaceEvent[] {
 
 export function listRaceClaims(): RaceClaim[] {
   return clone(getStore().raceClaims);
-}
-
-export function rememberStravaConnection(
-  memberId: string,
-  profile: StravaProfile,
-  accessToken: string,
-  expiresAt: number,
-): void {
-  getStore().stravaConnections.set(memberId, {
-    athlete: profile,
-    accessToken,
-    expiresAt,
-  });
-}
-
-export function forgetStravaConnection(memberId: string): void {
-  getStore().stravaConnections.delete(memberId);
-}
-
-export function getStoredStravaConnection(memberId: string | null): StravaConnection | null {
-  if (!memberId) {
-    return null;
-  }
-
-  return getStore().stravaConnections.get(memberId) ?? null;
-}
-
-export function savePendingStravaState(state: string, returnTo: string): void {
-  getStore().pendingStates.set(state, {
-    returnTo,
-    createdAt: Date.now(),
-  });
-}
-
-export function consumePendingStravaState(state: string | null): { returnTo: string } | null {
-  if (!state) {
-    return null;
-  }
-
-  const pending = getStore().pendingStates.get(state) ?? null;
-  getStore().pendingStates.delete(state);
-  return pending ? { returnTo: pending.returnTo } : null;
 }
 
 export function upsertRaceEvent(
@@ -201,12 +148,7 @@ async function resolveActivityForClaim(
     throw new Error("No hemos encontrado la modalidad seleccionada.");
   }
 
-  const connection = getStore().stravaConnections.get(member.id);
-  if (connection && connection.accessToken !== "mock-token") {
-    return fetchStravaActivityById(activityId, connection.accessToken);
-  }
-
-  return buildMockStravaActivity(activityId, member, modality);
+  return getStravaActivityForMember(member, activityId, modality);
 }
 
 export async function createRaceClaim(
@@ -264,17 +206,17 @@ export async function createRaceClaim(
   return clone(claim);
 }
 
-export function getActivityForCurrentMember(
+export async function getActivityForCurrentMember(
   member: Member | null,
   activityId: string,
-): StravaActivity {
+): Promise<StravaActivity> {
   const currentMember = ensureAuthenticated(member);
 
   if (!currentMember.stravaConnected) {
     throw new Error("No hay sesion de Strava activa.");
   }
 
-  return buildMockStravaActivity(activityId, currentMember, {
+  return getStravaActivityForMember(currentMember, activityId, {
     id: "preview",
     name: "Actividad de prueba",
     distanceKm: 12.4,

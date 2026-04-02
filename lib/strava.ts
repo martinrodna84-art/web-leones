@@ -1,20 +1,57 @@
-import type { Member, RaceModality, StravaActivity, StravaProfile } from "@/lib/types";
+import type {
+  Member,
+  RaceModality,
+  StravaActivity,
+  StravaProfile,
+  StravaTokenExchange,
+} from "@/lib/types";
 
 import { MOCK_STRAVA_PROFILE } from "@/lib/mock-data";
+import { getStravaEnv } from "@/lib/supabase/env";
 
 const RUN_SPORTS = new Set(["Run", "TrailRun"]);
 
-export function getStravaConfig() {
+function ensureStravaConfig() {
+  const config = getStravaEnv();
+
+  if (!config.clientId || !config.clientSecret) {
+    throw new Error("Faltan las credenciales reales de Strava.");
+  }
+
+  return config;
+}
+
+function normalizeTokenResponse(payload: Record<string, unknown>): StravaTokenExchange {
   return {
-    clientId: process.env.STRAVA_CLIENT_ID ?? "",
-    clientSecret: process.env.STRAVA_CLIENT_SECRET ?? "",
-    redirectUri: process.env.STRAVA_REDIRECT_URI ?? "",
+    accessToken: String(payload.access_token ?? ""),
+    refreshToken: String(payload.refresh_token ?? ""),
+    expiresAt: Number(payload.expires_at ?? 0),
+    expiresIn: Number(payload.expires_in ?? 0),
   };
+}
+
+export function getStravaConfig() {
+  return getStravaEnv();
 }
 
 export function hasRealStravaConfig(): boolean {
   const { clientId, clientSecret } = getStravaConfig();
   return Boolean(clientId && clientSecret);
+}
+
+export function hasStravaWebhookConfig(): boolean {
+  return Boolean(getStravaConfig().webhookVerifyToken);
+}
+
+export function parseStravaScopes(value: string | null | undefined): string[] {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(",")
+    .map((scope) => scope.trim())
+    .filter(Boolean);
 }
 
 export function toStravaProfile(member: Member): StravaProfile | null {
@@ -24,9 +61,12 @@ export function toStravaProfile(member: Member): StravaProfile | null {
 
   return {
     id: member.stravaAthleteId,
+    username: member.memberNumber.toLowerCase(),
     firstname: member.firstName,
     lastname: member.lastName,
     city: member.city,
+    state: "",
+    country: "",
     profile: member.stravaPhoto,
     profileMedium: member.stravaPhoto,
     ytdKm: member.yearKm,
@@ -34,8 +74,10 @@ export function toStravaProfile(member: Member): StravaProfile | null {
   };
 }
 
-export async function exchangeStravaToken(code: string) {
-  const { clientId, clientSecret } = getStravaConfig();
+export async function exchangeStravaToken(
+  code: string,
+): Promise<StravaTokenExchange> {
+  const { clientId, clientSecret } = ensureStravaConfig();
 
   const response = await fetch("https://www.strava.com/oauth/token", {
     method: "POST",
@@ -55,7 +97,50 @@ export async function exchangeStravaToken(code: string) {
     throw new Error("No se pudo intercambiar el token con Strava.");
   }
 
-  return response.json();
+  return normalizeTokenResponse((await response.json()) as Record<string, unknown>);
+}
+
+export async function refreshStravaToken(
+  refreshToken: string,
+): Promise<StravaTokenExchange> {
+  const { clientId, clientSecret } = ensureStravaConfig();
+
+  const response = await fetch("https://www.strava.com/oauth/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      client_id: clientId,
+      client_secret: clientSecret,
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+    }),
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("No se pudo refrescar el token de Strava.");
+  }
+
+  return normalizeTokenResponse((await response.json()) as Record<string, unknown>);
+}
+
+export async function deauthorizeStravaAccess(accessToken: string): Promise<void> {
+  if (!accessToken || accessToken === "mock-token") {
+    return;
+  }
+
+  await fetch("https://www.strava.com/oauth/deauthorize", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      access_token: accessToken,
+    }),
+    cache: "no-store",
+  });
 }
 
 export async function fetchStravaAthlete(accessToken: string): Promise<StravaProfile> {
@@ -70,15 +155,20 @@ export async function fetchStravaAthlete(accessToken: string): Promise<StravaPro
     throw new Error("No se pudo leer el atleta conectado en Strava.");
   }
 
-  const athlete = await response.json();
+  const athlete = (await response.json()) as Record<string, unknown>;
 
   return {
-    id: athlete.id,
-    firstname: athlete.firstname ?? "",
-    lastname: athlete.lastname ?? "",
-    city: athlete.city ?? "",
-    profile: athlete.profile ?? MOCK_STRAVA_PROFILE.profile,
-    profileMedium: athlete.profile_medium ?? athlete.profile ?? MOCK_STRAVA_PROFILE.profileMedium,
+    id: Number(athlete.id ?? 0),
+    username: String(athlete.username ?? ""),
+    firstname: String(athlete.firstname ?? ""),
+    lastname: String(athlete.lastname ?? ""),
+    city: String(athlete.city ?? ""),
+    state: String(athlete.state ?? ""),
+    country: String(athlete.country ?? ""),
+    profile: String(athlete.profile ?? MOCK_STRAVA_PROFILE.profile),
+    profileMedium: String(
+      athlete.profile_medium ?? athlete.profile ?? MOCK_STRAVA_PROFILE.profileMedium,
+    ),
     ytdKm: 0,
     ytdElevation: 0,
   };
@@ -109,7 +199,7 @@ export async function fetchYtdStats(accessToken: string): Promise<Pick<StravaPro
       throw new Error("No se pudo calcular el acumulado anual en Strava.");
     }
 
-    const activities: Array<Record<string, unknown>> = await response.json();
+    const activities = (await response.json()) as Array<Record<string, unknown>>;
 
     if (!activities.length) {
       break;
@@ -151,7 +241,7 @@ export async function fetchStravaActivityById(
     throw new Error("No se pudo leer esa actividad en Strava.");
   }
 
-  const activity = await response.json();
+  const activity = (await response.json()) as Record<string, unknown>;
   const sportType = String(activity.sport_type ?? activity.type ?? "");
 
   if (!RUN_SPORTS.has(sportType)) {
@@ -159,10 +249,10 @@ export async function fetchStravaActivityById(
   }
 
   return {
-    id: String(activity.id),
+    id: String(activity.id ?? activityId),
     name: String(activity.name ?? "Actividad Strava"),
     sportType: sportType as StravaActivity["sportType"],
-    athleteId: Number(activity.athlete?.id ?? 0),
+    athleteId: Number((activity.athlete as { id?: number } | undefined)?.id ?? 0),
     distance: Number(activity.distance ?? 0),
     elevationGain: Number(activity.total_elevation_gain ?? 0),
     startDate: String(activity.start_date ?? ""),

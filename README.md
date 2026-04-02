@@ -1,36 +1,79 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Los Leones del Trail
 
-## Getting Started
+Web del club y app de Liga Felina construida con Next.js, Supabase SSR y Strava.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 App Router
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Supabase Auth + Postgres
+- Strava OAuth + Webhooks
+
+## Rutas principales
+
+- `/` portada publica del club
+- `/liga-felina` clasificaciones de la liga
+- `/liga-felina/registro` registro, login y conexion con Strava
+- `/bases` reglas de la liga
+
+## Variables de entorno
+
+El proyecto necesita, como minimo:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
+STRAVA_CLIENT_ID=
+STRAVA_CLIENT_SECRET=
+STRAVA_REDIRECT_URI=http://localhost:3000/api/strava/callback
+STRAVA_WEBHOOK_VERIFY_TOKEN=
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup de Strava
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Crea o revisa tu app en https://www.strava.com/settings/api
+2. Configura el `Authorization Callback Domain`
+3. Usa como callback local `http://localhost:3000/api/strava/callback`
+4. Copia `Client ID` y `Client Secret` a `.env.local`
+5. Elige un valor largo para `STRAVA_WEBHOOK_VERIFY_TOKEN`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Scopes usados por la integracion:
 
-## Learn More
+- `profile:read_all`
+- `activity:read_all`
 
-To learn more about Next.js, take a look at the following resources:
+## Setup de Supabase
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Antes de probar Strava real, aplica las migraciones de `supabase/migrations/`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+La integracion de Strava usa:
 
-## Deploy on Vercel
+- `member_profiles`
+- `strava_connections`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Flujo de Strava
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. El socio inicia sesion en la web
+2. Pulsa "Conectar Strava"
+3. Strava devuelve al callback OAuth
+4. La app guarda tokens y enlaza el atleta con el socio
+5. Se sincronizan foto, perfil, km del ano y desnivel del ano
+6. La Liga Felina usa esos datos persistidos para las clasificaciones
+
+## Webhooks
+
+Rutas implementadas:
+
+- `GET /api/strava/webhook`
+- `POST /api/strava/webhook`
+
+Para activarlos necesitas registrar la suscripcion webhook en Strava con una URL publica HTTPS y el mismo `STRAVA_WEBHOOK_VERIFY_TOKEN`.
+
+## Notas
+
+- Los eventos y validaciones de carreras siguen siendo in-memory en `lib/store.ts`
+- La clasificacion de km y desnivel ya puede alimentarse desde Strava
+- Antes de publicar la liga con datos reales, revisa el acuerdo de la API de Strava

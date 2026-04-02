@@ -1,11 +1,7 @@
-import { DEFAULT_AVATAR, MOCK_STRAVA_PROFILE, seedMembers } from "@/lib/mock-data";
+import { MOCK_STRAVA_PROFILE, seedMembers } from "@/lib/mock-data";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { createClient as createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Database, Json } from "@/lib/supabase/types";
-import {
-  forgetStravaConnection,
-  rememberStravaConnection,
-} from "@/lib/store";
 import type {
   Gender,
   Member,
@@ -21,7 +17,7 @@ type MemberProfileRow = Database["public"]["Tables"]["member_profiles"]["Row"];
 type LeagueMemberRow = Database["public"]["Functions"]["list_member_profiles_for_league"]["Returns"][number];
 
 const SESSION_MEMBER_COLUMNS =
-  "user_id,email,first_name,last_name,full_name,member_number,gender,city,upload_photo,strava_photo,photo_source,strava_connected,strava_athlete_id,year_km,year_elevation,is_admin";
+  "user_id,email,first_name,last_name,full_name,member_number,gender,city,upload_photo,strava_photo,photo_source,strava_connected,strava_athlete_id,strava_last_sync_at,year_km,year_elevation,is_admin";
 
 const RESERVED_MEMBER_NUMBERS = new Set(seedMembers.map((member) => member.memberNumber));
 
@@ -80,9 +76,12 @@ function normalizeStravaProfile(profile: StravaProfile | null | undefined): Stra
 
   return {
     id: Number(profile.id) || MOCK_STRAVA_PROFILE.id,
+    username: normalizeText(profile.username) || MOCK_STRAVA_PROFILE.username,
     firstname: normalizeText(profile.firstname) || MOCK_STRAVA_PROFILE.firstname,
     lastname: normalizeText(profile.lastname) || MOCK_STRAVA_PROFILE.lastname,
     city: normalizeText(profile.city),
+    state: normalizeText(profile.state),
+    country: normalizeText(profile.country),
     profile: normalizeText(profile.profile),
     profileMedium: normalizeText(profile.profileMedium) || normalizeText(profile.profile),
     ytdKm: Number.isFinite(Number(profile.ytdKm)) ? Number(profile.ytdKm) : 0,
@@ -97,9 +96,12 @@ function toJsonProfile(profile: StravaProfile | null): Json | undefined {
 
   return {
     id: profile.id,
+    username: profile.username,
     firstname: profile.firstname,
     lastname: profile.lastname,
     city: profile.city,
+    state: profile.state,
+    country: profile.country,
     profile: profile.profile,
     profileMedium: profile.profileMedium,
     ytdKm: profile.ytdKm,
@@ -116,14 +118,15 @@ function mapMemberRow(row: LeagueMemberRow): Member {
     memberNumber: row.member_number,
     gender: normalizeGender(row.gender),
     city: row.city,
-    uploadPhoto: row.upload_photo || DEFAULT_AVATAR,
-    stravaPhoto: row.strava_photo || DEFAULT_AVATAR,
+    uploadPhoto: row.upload_photo || "",
+    stravaPhoto: row.strava_photo || "",
     photoSource: normalizePhotoSource(row.photo_source),
     stravaConnected: row.strava_connected,
     stravaAthleteId: row.strava_athlete_id ?? null,
     yearKm: Number(row.year_km || 0),
     yearElevation: Number(row.year_elevation || 0),
     isAdmin: row.is_admin,
+    stravaLastSyncAt: row.strava_last_sync_at ?? null,
   };
 }
 
@@ -137,14 +140,15 @@ function mapSessionMemberRow(row: MemberProfileRow): SessionMember {
     memberNumber: row.member_number,
     gender: normalizeGender(row.gender),
     city: row.city,
-    uploadPhoto: row.upload_photo || DEFAULT_AVATAR,
-    stravaPhoto: row.strava_photo || DEFAULT_AVATAR,
+    uploadPhoto: row.upload_photo || "",
+    stravaPhoto: row.strava_photo || "",
     photoSource: normalizePhotoSource(row.photo_source),
     stravaConnected: row.strava_connected,
     stravaAthleteId: row.strava_athlete_id ?? null,
     yearKm: Number(row.year_km || 0),
     yearElevation: Number(row.year_elevation || 0),
     isAdmin: row.is_admin,
+    stravaLastSyncAt: row.strava_last_sync_at ?? null,
   };
 }
 
@@ -214,6 +218,23 @@ async function fetchCurrentProfileWithClient(): Promise<SessionMember | null> {
 
 export async function getCurrentSessionMember(): Promise<SessionMember | null> {
   return fetchCurrentProfileWithClient();
+}
+
+export async function getSessionMemberById(
+  memberId: string,
+): Promise<SessionMember | null> {
+  const admin = getSupabaseAdminClient();
+  const { data, error } = await admin
+    .from("member_profiles")
+    .select(SESSION_MEMBER_COLUMNS)
+    .eq("user_id", memberId)
+    .maybeSingle();
+
+  if (error) {
+    throw mapSupabaseError(error, "No hemos podido cargar el perfil del socio.");
+  }
+
+  return data ? mapSessionMemberRow(data as MemberProfileRow) : null;
 }
 
 export async function listLeagueMembers(): Promise<Member[]> {
@@ -312,15 +333,6 @@ export async function registerMember(payload: RegisterPayload): Promise<SessionM
     throw new Error("La cuenta se ha creado, pero tu perfil aun no esta disponible.");
   }
 
-  if (draftStravaProfile) {
-    rememberStravaConnection(
-      member.id,
-      draftStravaProfile,
-      "mock-token",
-      Date.now() + 1000 * 60 * 60,
-    );
-  }
-
   return member;
 }
 
@@ -349,11 +361,6 @@ export async function loginMember(emailInput: string, password: string): Promise
 }
 
 export async function logoutMember(): Promise<void> {
-  const member = await fetchCurrentProfileWithClient();
-  if (member) {
-    forgetStravaConnection(member.id);
-  }
-
   const supabase = await createServerSupabaseClient();
   const { error } = await supabase.auth.signOut();
 
@@ -480,12 +487,20 @@ export async function connectMockStrava(): Promise<SessionMember> {
   const profile: StravaProfile = {
     ...MOCK_STRAVA_PROFILE,
     id: currentMember.stravaAthleteId ?? MOCK_STRAVA_PROFILE.id,
+    username: currentMember.memberNumber.toLowerCase(),
     firstname: currentMember.firstName || MOCK_STRAVA_PROFILE.firstname,
     lastname: currentMember.lastName || MOCK_STRAVA_PROFILE.lastname,
     city: currentMember.city || MOCK_STRAVA_PROFILE.city,
+    state: MOCK_STRAVA_PROFILE.state,
+    country: MOCK_STRAVA_PROFILE.country,
   };
 
-  return setCurrentMemberStrava(profile, "mock-token", Date.now() + 1000 * 60 * 60, true);
+  return setCurrentMemberStrava(
+    profile,
+    "mock-token",
+    Date.now() + 1000 * 60 * 60,
+    true,
+  );
 }
 
 export async function setCurrentMemberStrava(
@@ -515,8 +530,6 @@ export async function setCurrentMemberStrava(
     throw mapSupabaseError(error, "No se pudo conectar Strava.");
   }
 
-  rememberStravaConnection(currentMember.id, normalizedProfile, accessToken, expiresAt);
-
   const updatedMember = await fetchCurrentProfileWithClient();
   if (!updatedMember) {
     throw new Error("No hemos podido recargar tu perfil tras conectar Strava.");
@@ -537,8 +550,6 @@ export async function disconnectCurrentMemberStrava(): Promise<SessionMember> {
   if (error) {
     throw mapSupabaseError(error, "No se pudo desconectar Strava.");
   }
-
-  forgetStravaConnection(currentMember.id);
 
   const updatedMember = await fetchCurrentProfileWithClient();
   if (!updatedMember) {

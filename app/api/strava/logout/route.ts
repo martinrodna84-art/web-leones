@@ -1,5 +1,5 @@
 import { failure, ok } from "@/lib/api";
-import { disconnectCurrentMemberStrava } from "@/lib/member-service";
+import { disconnectCurrentMemberStrava } from "@/lib/strava-sync";
 
 export async function GET() {
   try {
