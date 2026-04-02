@@ -218,7 +218,8 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
             <h2>General, DevoraKm, Devora+ y Carreras</h2>
             <p>
               La liga ya vive dentro de Next.js con una capa de dominio tipada y reglas de
-              scoring separadas del markup para facilitar el paso posterior a Supabase.
+              scoring separadas del markup, mientras la identidad y los perfiles ya se
+              gestionan desde Supabase.
             </p>
           </div>
 

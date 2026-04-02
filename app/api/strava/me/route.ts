@@ -1,11 +1,10 @@
-import { failure, getSessionIdFromCookies, ok } from "@/lib/api";
-import { getSnapshot } from "@/lib/store";
+import { failure, ok } from "@/lib/api";
+import { getCurrentSessionMember } from "@/lib/member-service";
 import { toStravaProfile } from "@/lib/strava";
 
 export async function GET() {
   try {
-    const sessionId = await getSessionIdFromCookies();
-    const member = getSnapshot(sessionId).activeMember;
+    const member = await getCurrentSessionMember();
 
     if (!member?.stravaConnected) {
       return failure(new Error("No hay sesion de Strava activa."), 401);

@@ -12,7 +12,7 @@ export function RegisterPage({ snapshot }: { snapshot: LeagueSnapshot }) {
         member={snapshot.activeMember}
         subtitle="Registro de socios"
         title="Registro e inicio de sesion"
-        lead="Esta version deja listo el flujo de socio para luego conectarlo con Supabase Auth y Strava sin depender del navegador como fuente principal de datos."
+        lead="Registro, acceso y gestion de perfil con Supabase Auth, cookies SSR y una base de datos preparada para conectar Strava sin depender del navegador como fuente principal de verdad."
         compact
       />
       <RegisterExperience snapshot={snapshot} />

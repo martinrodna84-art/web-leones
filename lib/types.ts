@@ -20,8 +20,6 @@ export interface Member {
   firstName: string;
   lastName: string;
   fullName: string;
-  email: string;
-  password: string;
   memberNumber: string;
   gender: Gender;
   city: string;
@@ -33,6 +31,10 @@ export interface Member {
   yearKm: number;
   yearElevation: number;
   isAdmin: boolean;
+}
+
+export interface SessionMember extends Member {
+  email: string;
 }
 
 export interface RaceModality {
@@ -83,7 +85,7 @@ export interface LeaderboardRow extends Member {
 }
 
 export interface LeagueSnapshot {
-  activeMember: Member | null;
+  activeMember: SessionMember | null;
   members: Member[];
   raceEvents: RaceEvent[];
   raceClaims: RaceClaim[];

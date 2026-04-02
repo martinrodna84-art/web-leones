@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { getSessionIdFromCookies } from "@/lib/api";
+import {
+  getCurrentSessionMember,
+  setCurrentMemberStrava,
+} from "@/lib/member-service";
 import { exchangeStravaToken, fetchStravaAthlete, fetchYtdStats, hasRealStravaConfig } from "@/lib/strava";
-import { consumePendingStravaState, setStravaConnection } from "@/lib/store";
+import { consumePendingStravaState } from "@/lib/store";
 
 function withMessage(path: string, message: string) {
   const url = new URL(path, "http://localhost");
@@ -16,10 +19,10 @@ export async function GET(request: Request) {
   const state = url.searchParams.get("state");
   const error = url.searchParams.get("error");
   const pending = consumePendingStravaState(state);
-  const sessionId = await getSessionIdFromCookies();
+  const member = await getCurrentSessionMember();
   const returnTo = pending?.returnTo || "/liga-felina/registro";
 
-  if (!sessionId) {
+  if (!member) {
     return NextResponse.redirect(new URL(withMessage(returnTo, "La sesion de socio ya no esta activa."), url));
   }
 
@@ -36,8 +39,7 @@ export async function GET(request: Request) {
     const athlete = await fetchStravaAthlete(String(tokenPayload.access_token));
     const stats = await fetchYtdStats(String(tokenPayload.access_token));
 
-    setStravaConnection(
-      sessionId,
+    await setCurrentMemberStrava(
       {
         ...athlete,
         ytdKm: stats.ytdKm,

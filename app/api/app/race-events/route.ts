@@ -1,4 +1,5 @@
-import { failure, getSessionIdFromCookies, ok } from "@/lib/api";
+import { failure, ok } from "@/lib/api";
+import { getCurrentSessionMember } from "@/lib/member-service";
 import { listRaceEvents, upsertRaceEvent } from "@/lib/store";
 import type { RaceEventPayload } from "@/lib/types";
 
@@ -12,9 +13,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const sessionId = await getSessionIdFromCookies();
     const payload = (await request.json()) as RaceEventPayload;
-    return ok(upsertRaceEvent(sessionId, payload));
+    const member = await getCurrentSessionMember();
+    return ok(upsertRaceEvent(member, payload));
   } catch (error) {
     return failure(error, 400);
   }

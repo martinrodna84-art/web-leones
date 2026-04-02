@@ -13,7 +13,7 @@ export function getKmPoints(km: number): number {
 }
 
 export function getElevationPoints(elevationGain: number): number {
-  return Math.floor(elevationGain / 100) * 10;
+  return Math.floor(elevationGain / 100) * 10; 
 }
 
 export function getRacePointsFromModality(modality: RaceModality): number {

@@ -1,16 +1,20 @@
-import { cookies } from "next/headers";
+import { cache } from "react";
 
-import { findMemberBySession, getSnapshot, SESSION_COOKIE_NAME } from "@/lib/store";
+import { getCurrentSessionMember, listLeagueMembers } from "@/lib/member-service";
+import { getSnapshot } from "@/lib/store";
 
-export async function getSessionMemberId(): Promise<string | null> {
-  const cookieStore = await cookies();
-  return cookieStore.get(SESSION_COOKIE_NAME)?.value ?? null;
-}
+const getCachedSessionMember = cache(async () => getCurrentSessionMember());
+const getCachedLeagueMembers = cache(async () => listLeagueMembers());
 
 export async function getSessionMember() {
-  return findMemberBySession(await getSessionMemberId());
+  return getCachedSessionMember();
 }
 
 export async function getLeagueSnapshotForRequest() {
-  return getSnapshot(await getSessionMemberId());
+  const [activeMember, members] = await Promise.all([
+    getCachedSessionMember(),
+    getCachedLeagueMembers(),
+  ]);
+
+  return getSnapshot(activeMember, members);
 }

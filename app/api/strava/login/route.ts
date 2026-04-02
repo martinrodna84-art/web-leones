@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { getSessionIdFromCookies } from "@/lib/api";
+import { getCurrentSessionMember } from "@/lib/member-service";
 import { hasRealStravaConfig } from "@/lib/strava";
 import { savePendingStravaState } from "@/lib/store";
 
@@ -13,9 +13,9 @@ function withMessage(path: string, message: string) {
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const returnTo = url.searchParams.get("returnTo") || "/liga-felina/registro";
-  const sessionId = await getSessionIdFromCookies();
+  const member = await getCurrentSessionMember();
 
-  if (!sessionId) {
+  if (!member) {
     return NextResponse.redirect(new URL(withMessage(returnTo, "Inicia sesion primero para conectar Strava."), url));
   }
 

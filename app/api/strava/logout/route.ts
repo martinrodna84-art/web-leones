@@ -1,10 +1,9 @@
-import { failure, getSessionIdFromCookies, ok } from "@/lib/api";
-import { disconnectStrava } from "@/lib/store";
+import { failure, ok } from "@/lib/api";
+import { disconnectCurrentMemberStrava } from "@/lib/member-service";
 
 export async function GET() {
   try {
-    const sessionId = await getSessionIdFromCookies();
-    disconnectStrava(sessionId);
+    await disconnectCurrentMemberStrava();
     return ok({ ok: true });
   } catch (error) {
     return failure(error, 400);

@@ -275,8 +275,8 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
           <p className="eyebrow dark">Socios</p>
           <h2>Registro e inicio de sesion</h2>
           <p>
-            El flujo ya vive dentro del proyecto Next con sesiones por cookie y capa de datos
-            separada del cliente. La persistencia final se cambiara despues por Supabase.
+            El flujo ya vive dentro del proyecto Next con Supabase Auth, sesiones por cookie,
+            RPCs para el perfil y una capa de datos separada del cliente.
           </p>
         </div>
 
@@ -328,8 +328,8 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
                 <div>
                   <strong>Conectar con Strava</strong>
                   <p>
-                    El flujo real ya esta preparado con Route Handlers de Next. Mientras tanto,
-                    puedes usar la simulacion para probar el alta y las validaciones.
+                    El perfil del socio ya queda persistido en Supabase. Mientras tanto,
+                    puedes usar la simulacion para probar el alta y las validaciones de la liga.
                   </p>
                   <p className="strava-status">{stravaStatus}</p>
                 </div>
@@ -414,15 +414,15 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
             <form className="member-form" onSubmit={handleEditProfile}>
               <label>
                 Nombre
-                <input type="text" name="firstName" defaultValue={activeMember?.firstName || ""} placeholder="Nombre" />
+                <input type="text" name="firstName" required defaultValue={activeMember?.firstName || ""} placeholder="Nombre" />
               </label>
               <label>
                 Apellidos
-                <input type="text" name="lastName" defaultValue={activeMember?.lastName || ""} placeholder="Apellidos" />
+                <input type="text" name="lastName" required defaultValue={activeMember?.lastName || ""} placeholder="Apellidos" />
               </label>
               <label>
                 Email
-                <input type="email" name="email" defaultValue={activeMember?.email || ""} placeholder="correo@ejemplo.com" />
+                <input type="email" name="email" required defaultValue={activeMember?.email || ""} placeholder="correo@ejemplo.com" />
               </label>
               <label>
                 Ciudad
@@ -430,7 +430,7 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
               </label>
               <label>
                 Numero de socio
-                <input type="text" name="memberNumber" defaultValue={activeMember?.memberNumber || ""} pattern="L-[0-9]{3}" placeholder="L-001" />
+                <input type="text" name="memberNumber" required defaultValue={activeMember?.memberNumber || ""} pattern="L-[0-9]{3}" placeholder="L-001" />
               </label>
               <label>
                 Sexo para la clasificacion

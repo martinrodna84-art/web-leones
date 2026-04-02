@@ -1,10 +1,12 @@
-import { failure, getSessionIdFromCookies, ok } from "@/lib/api";
-import { connectMockStrava, disconnectStrava } from "@/lib/store";
+import { failure, ok } from "@/lib/api";
+import {
+  connectMockStrava,
+  disconnectCurrentMemberStrava,
+} from "@/lib/member-service";
 
 export async function POST() {
   try {
-    const sessionId = await getSessionIdFromCookies();
-    return ok(connectMockStrava(sessionId));
+    return ok(await connectMockStrava());
   } catch (error) {
     return failure(error, 400);
   }
@@ -12,8 +14,7 @@ export async function POST() {
 
 export async function DELETE() {
   try {
-    const sessionId = await getSessionIdFromCookies();
-    return ok(disconnectStrava(sessionId));
+    return ok(await disconnectCurrentMemberStrava());
   } catch (error) {
     return failure(error, 400);
   }
