@@ -1,0 +1,699 @@
+"use client";
+
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
+
+import { getDisplayName, resolvePhoto } from "@/lib/members";
+import {
+  formatDate,
+  formatInteger,
+  formatNumber,
+  getClaimedEventIds,
+  getElevationRanking,
+  getGeneralBreakdown,
+  getGeneralRanking,
+  getKmRanking,
+  getRacePointsFromModality,
+  getRankIcon,
+} from "@/lib/scoring";
+import type { Gender, LeagueSnapshot, RaceEvent, RaceModality } from "@/lib/types";
+
+type RankingTab = "general" | "km" | "elevation" | "races";
+
+type EventFormState = {
+  id?: string;
+  name: string;
+  edition: string;
+  modalities: RaceModality[];
+};
+
+type ClaimState = {
+  eventId: string;
+  modalityId: string;
+  activityUrl: string;
+};
+
+function createEmptyModality(): RaceModality {
+  return {
+    id: "",
+    name: "",
+    distanceKm: 0,
+    elevationGain: 0,
+    date: "",
+    time: "",
+    order: 0,
+  };
+}
+
+function buildEventForm(eventItem?: RaceEvent): EventFormState {
+  if (!eventItem) {
+    return {
+      name: "",
+      edition: "",
+      modalities: [createEmptyModality()],
+    };
+  }
+
+  return {
+    id: eventItem.id,
+    name: eventItem.name,
+    edition: eventItem.edition,
+    modalities: eventItem.modalities.map((modality) => ({ ...modality })),
+  };
+}
+
+async function requestJson<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
+  const response = await fetch(input, init);
+  const payload = (await response.json()) as { data?: T; error?: string };
+
+  if (!response.ok) {
+    throw new Error(payload.error || "La operacion no se pudo completar.");
+  }
+
+  if (payload.data === undefined) {
+    throw new Error("La respuesta del servidor no es valida.");
+  }
+
+  return payload.data;
+}
+
+export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
+  const router = useRouter();
+  const [isPending, startRouteRefresh] = useTransition();
+  const [currentGender, setCurrentGender] = useState<Gender>("men");
+  const [currentTab, setCurrentTab] = useState<RankingTab>("general");
+  const [expandedRows, setExpandedRows] = useState<string[]>([]);
+  const [eventForm, setEventForm] = useState<EventFormState | null>(null);
+  const [eventNote, setEventNote] = useState("");
+  const [claimState, setClaimState] = useState<ClaimState | null>(null);
+  const [claimNote, setClaimNote] = useState("");
+  const [selectedEventId, setSelectedEventId] = useState(snapshot.raceEvents[0]?.id ?? "");
+
+  const events = snapshot.raceEvents
+    .slice()
+    .sort((left, right) => `${left.edition}${left.name}`.localeCompare(`${right.edition}${right.name}`));
+  const activeMember = snapshot.activeMember;
+  const effectiveSelectedEventId =
+    selectedEventId && events.some((eventItem) => eventItem.id === selectedEventId)
+      ? selectedEventId
+      : events[0]?.id ?? "";
+  const selectedEvent =
+    events.find((eventItem) => eventItem.id === effectiveSelectedEventId) ?? events[0] ?? null;
+  const claimedEventIds = activeMember ? getClaimedEventIds(snapshot.raceClaims, activeMember.id) : new Set<string>();
+  const isAdmin = Boolean(activeMember?.isAdmin);
+  const rankings = {
+    general: getGeneralRanking(snapshot.members, snapshot.raceClaims, currentGender),
+    km: getKmRanking(snapshot.members, currentGender),
+    elevation: getElevationRanking(snapshot.members, currentGender),
+  };
+
+  function refreshPage() {
+    startRouteRefresh(() => {
+      router.refresh();
+    });
+  }
+
+  function toggleExpandedRow(memberId: string) {
+    setExpandedRows((current) =>
+      current.includes(memberId) ? current.filter((item) => item !== memberId) : [...current, memberId],
+    );
+  }
+
+  function handleCreateEvent() {
+    setEventNote("");
+    setEventForm(buildEventForm());
+  }
+
+  function handleEditEvent(eventItem: RaceEvent) {
+    setEventNote("");
+    setEventForm(buildEventForm(eventItem));
+  }
+
+  async function handleDeleteEvent(eventId: string) {
+    if (!window.confirm("Se borrara el evento completo con sus validaciones. Continuar?")) {
+      return;
+    }
+
+    try {
+      await requestJson<{ ok: true }>(`/api/app/race-events/${eventId}`, {
+        method: "DELETE",
+      });
+      refreshPage();
+    } catch (error) {
+      setClaimNote(error instanceof Error ? error.message : "No se pudo borrar el evento.");
+      setCurrentTab("races");
+    }
+  }
+
+  async function handleEventSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!eventForm) {
+      return;
+    }
+
+    setEventNote("");
+
+    try {
+      const body = JSON.stringify({
+        name: eventForm.name,
+        edition: eventForm.edition,
+        modalities: eventForm.modalities,
+      });
+
+      if (eventForm.id) {
+        await requestJson<RaceEvent>(`/api/app/race-events/${eventForm.id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body,
+        });
+      } else {
+        await requestJson<RaceEvent>("/api/app/race-events", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body,
+        });
+      }
+
+      setEventForm(null);
+      refreshPage();
+    } catch (error) {
+      setEventNote(error instanceof Error ? error.message : "No se pudo guardar el evento.");
+    }
+  }
+
+  async function handleClaimSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!claimState) {
+      return;
+    }
+
+    setClaimNote("");
+
+    try {
+      await requestJson("/api/app/race-claims", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(claimState),
+      });
+      setClaimState(null);
+      refreshPage();
+    } catch (error) {
+      setClaimNote(error instanceof Error ? error.message : "No se pudo validar la carrera.");
+    }
+  }
+
+  return (
+    <main className="league-main">
+      <section className="ranking-section" id="clasificaciones">
+        <div className="ranking-head">
+          <div>
+            <p className="eyebrow dark">Clasificaciones</p>
+            <h2>General, DevoraKm, Devora+ y Carreras</h2>
+            <p>
+              La liga ya vive dentro de Next.js con una capa de dominio tipada y reglas de
+              scoring separadas del markup para facilitar el paso posterior a Supabase.
+            </p>
+          </div>
+
+          <div className="gender-switch" role="tablist" aria-label="Clasificacion por sexo" data-gender={currentGender}>
+            <button className={`gender-option ${currentGender === "men" ? "is-active" : ""}`} type="button" onClick={() => setCurrentGender("men")}>
+              Hombres
+            </button>
+            <button className={`gender-option ${currentGender === "women" ? "is-active" : ""}`} type="button" onClick={() => setCurrentGender("women")}>
+              Mujeres
+            </button>
+            <span className="gender-slider" aria-hidden="true" />
+          </div>
+        </div>
+
+        <div className="ranking-tabs" role="tablist" aria-label="Clasificaciones Liga Felina">
+          <button className={`tab-button ${currentTab === "general" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("general")}>
+            Clasificacion general
+          </button>
+          <button className={`tab-button ${currentTab === "km" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("km")}>
+            DevoraKm
+          </button>
+          <button className={`tab-button ${currentTab === "elevation" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("elevation")}>
+            Devora+
+          </button>
+          <button className={`tab-button ${currentTab === "races" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("races")}>
+            Carreras
+          </button>
+        </div>
+
+        <article className={`ranking-panel ${currentTab === "general" ? "is-active" : ""}`}>
+          <div className="panel-intro">
+            <h3>Clasificacion general</h3>
+            <p>Suma total de puntos de kilometros, desnivel positivo y carreras validadas.</p>
+          </div>
+          <LeaderboardTable
+            rows={rankings.general}
+            isGeneral
+            expandedRows={expandedRows}
+            onToggleRow={toggleExpandedRow}
+            raceEvents={snapshot.raceEvents}
+            raceClaims={snapshot.raceClaims}
+          />
+        </article>
+
+        <article className={`ranking-panel ${currentTab === "km" ? "is-active" : ""}`}>
+          <div className="panel-intro">
+            <h3>DevoraKm</h3>
+            <p>Ranking por kilometros acumulados en el ano en curso y su puntuacion asociada.</p>
+          </div>
+          <LeaderboardTable rows={rankings.km} />
+        </article>
+
+        <article className={`ranking-panel ${currentTab === "elevation" ? "is-active" : ""}`}>
+          <div className="panel-intro">
+            <h3>Devora+</h3>
+            <p>Ranking por desnivel positivo acumulado en el ano en curso y su puntuacion asociada.</p>
+          </div>
+          <LeaderboardTable rows={rankings.elevation} />
+        </article>
+
+        <article className={`ranking-panel ${currentTab === "races" ? "is-active" : ""}`}>
+          <div className="panel-intro">
+            <h3>Carreras</h3>
+            <p>Crea eventos, anade modalidades y valida carreras con la URL de Strava de cada socio.</p>
+          </div>
+
+          <div className="race-admin-bar" hidden={!isAdmin}>
+            <div>
+              <strong>Gestion de eventos</strong>
+              <p>Solo la cuenta administradora puede crear y editar carreras.</p>
+            </div>
+            <button className="button button-primary" type="button" onClick={handleCreateEvent}>
+              Crear evento
+            </button>
+          </div>
+
+          <div className="races-placeholder" hidden={isAdmin}>
+            <strong>Zona de carreras</strong>
+            <p>
+              {activeMember
+                ? "Tu cuenta puede validar carreras, pero solo administracion gestiona eventos."
+                : "Inicia sesion para validar carreras y acceder a tu perfil."}
+            </p>
+          </div>
+
+          <label className="race-selector-label">
+            <span>Selecciona un evento</span>
+            <select value={effectiveSelectedEventId} onChange={(event) => setSelectedEventId(event.target.value)}>
+              <option value="">Elige un evento para ver sus modalidades</option>
+              {events.map((eventItem) => (
+                <option key={eventItem.id} value={eventItem.id}>
+                  {eventItem.name} · {eventItem.edition}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {eventForm ? (
+            <form className="race-event-form" onSubmit={handleEventSubmit}>
+              <div className="card-head">
+                <h3>{eventForm.id ? "Editar evento" : "Nuevo evento"}</h3>
+                <span className="card-chip">Carreras</span>
+              </div>
+
+              <div className="race-event-grid">
+                <label>
+                  Nombre del evento
+                  <input value={eventForm.name} onChange={(event) => setEventForm((current) => current ? { ...current, name: event.target.value } : current)} />
+                </label>
+                <label>
+                  Edicion
+                  <input value={eventForm.edition} onChange={(event) => setEventForm((current) => current ? { ...current, edition: event.target.value } : current)} />
+                </label>
+              </div>
+
+              <div className="modalities-head">
+                <strong>Modalidades</strong>
+                <button
+                  className="button ghost-button"
+                  type="button"
+                  onClick={() =>
+                    setEventForm((current) =>
+                      current
+                        ? { ...current, modalities: [...current.modalities, createEmptyModality()] }
+                        : current,
+                    )
+                  }
+                >
+                  Anadir modalidad
+                </button>
+              </div>
+
+              <div className="modalities-list">
+                {eventForm.modalities.map((modality, index) => (
+                  <div key={`${modality.id || "new"}-${index}`} className="race-mode-editor">
+                    <div className="race-mode-grid">
+                      <label>
+                        Modalidad
+                        <input
+                          value={modality.name}
+                          onChange={(event) =>
+                            setEventForm((current) =>
+                              current
+                                ? {
+                                    ...current,
+                                    modalities: current.modalities.map((item, itemIndex) =>
+                                      itemIndex === index ? { ...item, name: event.target.value } : item,
+                                    ),
+                                  }
+                                : current,
+                            )
+                          }
+                        />
+                      </label>
+                      <label>
+                        Distancia (km)
+                        <input
+                          type="number"
+                          min="0"
+                          step="0.1"
+                          value={modality.distanceKm}
+                          onChange={(event) =>
+                            setEventForm((current) =>
+                              current
+                                ? {
+                                    ...current,
+                                    modalities: current.modalities.map((item, itemIndex) =>
+                                      itemIndex === index ? { ...item, distanceKm: Number(event.target.value) } : item,
+                                    ),
+                                  }
+                                : current,
+                            )
+                          }
+                        />
+                      </label>
+                      <label>
+                        Desnivel + (m)
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={modality.elevationGain}
+                          onChange={(event) =>
+                            setEventForm((current) =>
+                              current
+                                ? {
+                                    ...current,
+                                    modalities: current.modalities.map((item, itemIndex) =>
+                                      itemIndex === index ? { ...item, elevationGain: Number(event.target.value) } : item,
+                                    ),
+                                  }
+                                : current,
+                            )
+                          }
+                        />
+                      </label>
+                      <label>
+                        Fecha
+                        <input
+                          type="date"
+                          value={modality.date}
+                          onChange={(event) =>
+                            setEventForm((current) =>
+                              current
+                                ? {
+                                    ...current,
+                                    modalities: current.modalities.map((item, itemIndex) =>
+                                      itemIndex === index ? { ...item, date: event.target.value } : item,
+                                    ),
+                                  }
+                                : current,
+                            )
+                          }
+                        />
+                      </label>
+                      <label>
+                        Hora
+                        <input
+                          type="time"
+                          value={modality.time}
+                          onChange={(event) =>
+                            setEventForm((current) =>
+                              current
+                                ? {
+                                    ...current,
+                                    modalities: current.modalities.map((item, itemIndex) =>
+                                      itemIndex === index ? { ...item, time: event.target.value } : item,
+                                    ),
+                                  }
+                                : current,
+                            )
+                          }
+                        />
+                      </label>
+                    </div>
+                    <div className="race-mode-actions">
+                      <button
+                        className="button ghost-button"
+                        type="button"
+                        onClick={() =>
+                          setEventForm((current) =>
+                            current
+                              ? {
+                                  ...current,
+                                  modalities: current.modalities.filter((_, itemIndex) => itemIndex !== index),
+                                }
+                              : current,
+                          )
+                        }
+                      >
+                        Eliminar modalidad
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="form-actions">
+                <button className="button button-primary" type="submit" disabled={isPending}>
+                  Guardar evento
+                </button>
+                <button className="button ghost-button" type="button" onClick={() => setEventForm(null)}>
+                  Cancelar
+                </button>
+              </div>
+              <p className="form-note">{eventNote}</p>
+            </form>
+          ) : null}
+
+          {!selectedEvent ? (
+            <div className="races-placeholder">
+              <strong>Sin carreras todavia</strong>
+              <p>Cuando se creen eventos, apareceran aqui para validar participaciones.</p>
+            </div>
+          ) : (
+            <article className="race-event-card">
+              <div className="race-event-head">
+                <div>
+                  <h4>
+                    {selectedEvent.name} <span>· {selectedEvent.edition}</span>
+                  </h4>
+                  <p>{selectedEvent.modalities.length} modalidad(es) disponibles para validar.</p>
+                </div>
+                {isAdmin ? (
+                  <div className="race-event-actions">
+                    <button className="button ghost-button" type="button" onClick={() => handleEditEvent(selectedEvent)}>
+                      Editar evento
+                    </button>
+                    <button className="button ghost-button" type="button" onClick={() => handleDeleteEvent(selectedEvent.id)}>
+                      Borrar evento
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="race-modes-list">
+                {selectedEvent.modalities
+                  .slice()
+                  .sort((left, right) => (left.date + left.time).localeCompare(right.date + right.time))
+                  .map((modality) => {
+                    const locked = activeMember ? claimedEventIds.has(selectedEvent.id) : false;
+                    const claimDisabled = !activeMember || locked || !activeMember.stravaConnected;
+                    const statusLabel = !activeMember
+                      ? "Inicia sesion para validar"
+                      : !locked && !activeMember.stravaConnected
+                        ? "Necesitas Strava conectado"
+                        : "";
+                    const buttonLabel = locked ? "Validado" : "He corrido esta";
+
+                    return (
+                      <article key={modality.id} className="race-mode-card">
+                        <h5>{modality.name}</h5>
+                        <div className="mode-meta">
+                          <span className="mode-chip">{formatNumber(modality.distanceKm, 1)} km</span>
+                          <span className="mode-chip">{formatInteger(modality.elevationGain)} m+</span>
+                          <span className="mode-chip">
+                            {formatDate(modality.date)} · {modality.time}
+                          </span>
+                          <span className="mode-chip">{formatInteger(getRacePointsFromModality(modality))} pts</span>
+                        </div>
+                        <div className="claim-status">
+                          <button
+                            className={`button ${locked ? "is-validated" : "button-primary"}`}
+                            type="button"
+                            disabled={claimDisabled}
+                            onClick={() => {
+                              setClaimNote("");
+                              setClaimState({
+                                eventId: selectedEvent.id,
+                                modalityId: modality.id,
+                                activityUrl: "",
+                              });
+                            }}
+                          >
+                            {buttonLabel}
+                          </button>
+                          {statusLabel ? <span className="claim-badge">{statusLabel}</span> : null}
+                        </div>
+                      </article>
+                    );
+                  })}
+              </div>
+            </article>
+          )}
+
+          {claimState ? (
+            <form className="race-claim-form" onSubmit={handleClaimSubmit}>
+              <div className="card-head">
+                <h3>Validar carrera</h3>
+                <span className="card-chip alt">Strava</span>
+              </div>
+              <p>Pega la URL de la actividad de Strava para sumar puntos.</p>
+              <label>
+                URL de la actividad de Strava
+                <input
+                  type="url"
+                  value={claimState.activityUrl}
+                  onChange={(event) =>
+                    setClaimState((current) =>
+                      current ? { ...current, activityUrl: event.target.value } : current,
+                    )
+                  }
+                  placeholder="https://www.strava.com/activities/123456789"
+                />
+              </label>
+              <div className="form-actions">
+                <button className="button button-primary" type="submit" disabled={isPending}>
+                  Verificar y sumar puntos
+                </button>
+                <button className="button ghost-button" type="button" onClick={() => setClaimState(null)}>
+                  Cancelar
+                </button>
+              </div>
+              <p className="form-note">{claimNote}</p>
+            </form>
+          ) : null}
+        </article>
+      </section>
+    </main>
+  );
+}
+
+function LeaderboardTable({
+  rows,
+  isGeneral = false,
+  expandedRows = [],
+  onToggleRow,
+  raceEvents = [],
+  raceClaims = [],
+}: {
+  rows: ReturnType<typeof getGeneralRanking>;
+  isGeneral?: boolean;
+  expandedRows?: string[];
+  onToggleRow?: (memberId: string) => void;
+  raceEvents?: LeagueSnapshot["raceEvents"];
+  raceClaims?: LeagueSnapshot["raceClaims"];
+}) {
+  return (
+    <div className="table-shell">
+      <table className="ranking-table">
+        <thead>
+          <tr>
+            <th>Posicion</th>
+            <th>Socio</th>
+            <th>Dato</th>
+            <th>Puntuacion</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, index) => {
+            const open = isGeneral && expandedRows.includes(row.id);
+            const breakdown = isGeneral ? getGeneralBreakdown(row, raceEvents, raceClaims) : null;
+
+            return (
+              <tr key={row.id}>
+                <td>
+                  <span className="position-badge">
+                    <span className="position-icon">{getRankIcon(index + 1)}</span>
+                    {index + 1}
+                  </span>
+                </td>
+                <td>
+                  <div className="athlete-cell">
+                    <div className="athlete-avatar">
+                      <Image src={resolvePhoto(row)} alt={`Foto de ${getDisplayName(row)}`} width={56} height={56} unoptimized />
+                    </div>
+                    <div>
+                      <strong>{getDisplayName(row)}</strong>
+                      <div>{row.memberNumber}</div>
+                      {isGeneral ? (
+                        <>
+                          <button
+                            className="general-breakdown-button"
+                            type="button"
+                            onClick={() => onToggleRow?.(row.id)}
+                          >
+                            {open ? "Ocultar detalle" : "Ver detalle"}
+                          </button>
+                          {open && breakdown ? (
+                            <div className="general-breakdown">
+                              <ul className="general-breakdown-list">
+                                <li>
+                                  <strong>Puntos por Kms:</strong> {formatInteger(breakdown.kmPoints)} pts
+                                </li>
+                                <li>
+                                  <strong>Puntos por D+:</strong> {formatInteger(breakdown.elevationPoints)} pts
+                                </li>
+                                {breakdown.races.length ? (
+                                  breakdown.races.map((race) => (
+                                    <li key={`${row.id}-${race.name}`}>
+                                      <strong>{race.name}:</strong> {formatInteger(race.points)} pts
+                                    </li>
+                                  ))
+                                ) : (
+                                  <li>
+                                    <strong>Carreras:</strong> 0 pts
+                                  </li>
+                                )}
+                              </ul>
+                            </div>
+                          ) : null}
+                        </>
+                      ) : null}
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span className="metric-pill">{row.metricLabel}</span>
+                </td>
+                <td className="points-cell">{formatInteger(row.points)} pts</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}

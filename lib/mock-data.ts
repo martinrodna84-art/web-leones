@@ -1,4 +1,4 @@
-import type { RaceClaim, RaceEvent, StravaProfile } from "@/lib/types";
+import type { Member, RaceClaim, RaceEvent, StravaProfile } from "@/lib/types";
 
 export const DEFAULT_AVATAR =
   "data:image/svg+xml;utf8," +
@@ -36,7 +36,7 @@ export const MOCK_STRAVA_PROFILE: StravaProfile = {
   ytdElevation: 13240,
 };
 
-export const seedMembers = [
+export const seedMembers: Member[] = [
   {
     id: "seed-1",
     firstName: "Juanma",
@@ -189,7 +189,7 @@ export const seedMembers = [
     yearElevation: 13120,
     isAdmin: false,
   },
-] as const;
+];
 
 export const seedRaceEvents: RaceEvent[] = [
   {
