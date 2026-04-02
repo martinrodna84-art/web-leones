@@ -173,6 +173,13 @@ function mapSupabaseError(error: unknown, fallback: string): Error {
   return new Error(message || fallback);
 }
 
+function isSupabaseSessionMissingError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.name === "AuthSessionMissingError" || error.message.includes("Auth session missing"))
+  );
+}
+
 async function fetchCurrentProfileWithClient(): Promise<SessionMember | null> {
   const supabase = await createServerSupabaseClient();
   const {
@@ -181,6 +188,10 @@ async function fetchCurrentProfileWithClient(): Promise<SessionMember | null> {
   } = await supabase.auth.getUser();
 
   if (userError) {
+    if (isSupabaseSessionMissingError(userError)) {
+      return null;
+    }
+
     throw mapSupabaseError(userError, "No hemos podido validar la sesion actual.");
   }
 

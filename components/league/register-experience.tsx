@@ -98,7 +98,8 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
     event.preventDefault();
     setRegisterNote("");
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const file = formData.get("photo");
 
     try {
@@ -124,7 +125,7 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
       setDraftStravaProfile(null);
       setRegisterNote("Perfil creado correctamente. Ya has iniciado sesion.");
       setSessionNote("Cuenta apta para Liga Felina.");
-      event.currentTarget.reset();
+      form.reset();
       refreshPage();
     } catch (error) {
       setRegisterNote(error instanceof Error ? error.message : "No se pudo crear el perfil.");
@@ -135,7 +136,8 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
     event.preventDefault();
     setLoginNote("");
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     try {
       const member = await requestJson<Member>("/api/app/auth/login", {
@@ -151,7 +153,7 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
 
       setLoginNote(`Bienvenido, ${getDisplayName(member)}.`);
       setSessionNote(member.stravaConnected ? "Cuenta apta para Liga Felina." : "Sin Strava: este perfil queda fuera de la clasificacion.");
-      event.currentTarget.reset();
+      form.reset();
       refreshPage();
     } catch (error) {
       setLoginNote(error instanceof Error ? error.message : "No se pudo iniciar sesion.");
@@ -212,7 +214,8 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
     }
 
     setEditNote("");
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
     const file = formData.get("photo");
 
     try {
@@ -244,7 +247,8 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
     event.preventDefault();
     setResetNote("");
 
-    const formData = new FormData(event.currentTarget);
+    const form = event.currentTarget;
+    const formData = new FormData(form);
 
     try {
       await requestJson<{ ok: true }>("/api/app/auth/password", {
@@ -260,7 +264,7 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
       });
 
       setResetNote("Contrasena actualizada. Ya puedes iniciar sesion con la nueva.");
-      event.currentTarget.reset();
+      form.reset();
     } catch (error) {
       setResetNote(error instanceof Error ? error.message : "No se pudo actualizar la contrasena.");
     }
