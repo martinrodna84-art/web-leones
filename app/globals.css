@@ -50,9 +50,9 @@ body {
   margin: 0;
   min-height: 100vh;
   background:
-    radial-gradient(circle at top, rgba(109, 197, 216, 0.14), transparent 25%),
-    linear-gradient(180deg, #eef4f1 0%, #f8faf8 100%);
-  color: var(--text-dark);
+    radial-gradient(circle at top, rgba(204, 255, 0, 0.08), transparent 18%),
+    linear-gradient(180deg, #0b0e0d 0%, #141715 54%, #1a1d1b 100%);
+  color: var(--ink);
   font-family: var(--font-sans);
 }
 
@@ -77,11 +77,16 @@ input,
 select,
 textarea {
   width: 100%;
-  border: 1px solid rgba(31, 36, 33, 0.12);
-  border-radius: 16px;
+  border: 1px solid rgba(204, 255, 0, 0.18);
+  border-radius: 0;
   padding: 0.95rem 1rem;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--text-dark);
+  background: #101311;
+  color: var(--ink);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(231, 239, 233, 0.46);
 }
 
 textarea {
@@ -93,7 +98,7 @@ select:focus-visible,
 textarea:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--sky);
+  outline: 2px solid var(--lime);
   outline-offset: 2px;
 }
 
@@ -495,9 +500,9 @@ a:focus-visible {
 }
 
 .league-session-trigger:focus-visible {
-  outline: 2px solid var(--sky);
+  outline: 2px solid var(--lime);
   outline-offset: 4px;
-  border-radius: 999px;
+  border-radius: 0;
 }
 
 .league-session-trigger .league-session-avatar {
@@ -625,6 +630,10 @@ a:focus-visible {
   margin-right: auto;
 }
 
+.league-hero-copy--landing {
+  max-width: min(560px, 100%);
+}
+
 .hero-kicker {
   margin: 0;
   color: var(--white);
@@ -660,7 +669,18 @@ a:focus-visible {
 }
 
 .eyebrow.dark {
-  color: #59706a;
+  color: rgba(204, 255, 0, 0.84);
+}
+
+.league-hero-eyebrow {
+  color: #00FFFF;
+  margin: 0;
+  font-family: var(--font-teko);
+  font-size: clamp(1.78rem, 3.25vw, 2.85rem);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-transform: none;
 }
 
 .hero-copy h1,
@@ -668,6 +688,38 @@ a:focus-visible {
   margin: 0;
   font-size: clamp(3.2rem, 8vw, 5.6rem);
   line-height: 0.92;
+}
+
+.league-hero-title {
+  color: var(--lime);
+  font-family: var(--font-teko);
+  font-size: clamp(3.45rem, 6.9vw, 4.0rem);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 0.84;
+  text-transform: uppercase;
+}
+
+.league-hero-title--stacked {
+  display: block;
+  margin-top: 0.2rem;
+  max-width: 16.8ch;
+}
+
+.league-hero-title--stacked span {
+  display: block;
+  white-space: nowrap;
+}
+
+.league-hero-lead {
+  margin: 0;
+  max-width: 31ch;
+  color: var(--white);
+  font-family: var(--font-arboria-book), var(--font-arboria-book-fallback);
+  font-size: clamp(0.95rem, 1.62vw, 1.18rem);
+  font-weight: 400;
+  line-height: 1.22;
+  letter-spacing: -0.01em;
 }
 
 .hero-headline {
@@ -737,18 +789,22 @@ a:focus-visible {
   justify-content: center;
   min-height: 48px;
   padding: 0.85rem 1.35rem;
-  border: 0;
-  border-radius: 999px;
+  border: 1px solid transparent;
+  border-radius: 0;
   cursor: pointer;
-  font-weight: 800;
-  transition: transform 180ms ease, background 180ms ease, color 180ms ease, opacity 180ms ease;
+  font-family: var(--font-teko);
+  font-size: 1.08rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, opacity 180ms ease;
 }
 
 .button:hover,
 .button:focus-visible,
 .button-as-link:hover,
 .button-as-link:focus-visible {
-  transform: translateY(-1px);
+  transform: none;
 }
 
 .button:disabled,
@@ -762,6 +818,16 @@ a:focus-visible {
 .button-as-link {
   background: var(--lime);
   color: var(--coal);
+  border-color: var(--lime);
+}
+
+.button-primary:hover,
+.button-primary:focus-visible,
+.button-as-link:hover,
+.button-as-link:focus-visible {
+  background: #091106;
+  color: var(--lime);
+  border-color: var(--lime);
 }
 
 .hero-primary-cta {
@@ -793,29 +859,46 @@ a:focus-visible {
 }
 
 .button-secondary {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
   color: var(--ink);
+  border-color: rgba(204, 255, 0, 0.2);
 }
 
 .button-secondary-dark {
-  background: var(--coal);
+  background: #111413;
   color: var(--white);
+  border-color: rgba(204, 255, 0, 0.4);
+}
+
+.button-secondary-dark:hover,
+.button-secondary-dark:focus-visible,
+.button-secondary:hover,
+.button-secondary:focus-visible,
+.ghost-button:hover,
+.ghost-button:focus-visible,
+.ghost-button-light:hover,
+.ghost-button-light:focus-visible {
+  background: var(--lime);
+  color: #091106;
+  border-color: var(--lime);
 }
 
 .button-strava {
   background: #fc5200;
   color: var(--white);
+  border-color: #fc5200;
 }
 
 .ghost-button {
-  background: rgba(255, 255, 255, 0.08);
-  color: inherit;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--ink);
+  border: 1px solid rgba(204, 255, 0, 0.18);
 }
 
 .ghost-button-light {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
   color: var(--white);
+  border-color: rgba(204, 255, 0, 0.2);
 }
 
 .is-disabled-link {
@@ -834,8 +917,9 @@ a:focus-visible {
 .info-card,
 .spotlight-card,
 .training-card {
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
+  border-radius: 0;
+  box-shadow: none;
+  border: 1px solid rgba(204, 255, 0, 0.12);
 }
 
 .hero-panel,
@@ -847,7 +931,7 @@ a:focus-visible {
 
 .text-link,
 .inline-link {
-  color: var(--sky);
+  color: var(--lime);
   font-weight: 700;
 }
 
@@ -1136,6 +1220,7 @@ a:focus-visible {
   max-width: 1240px;
   margin: 0 auto;
   padding: 4rem 1.5rem 0;
+  color: var(--ink);
 }
 
 .section-heading {
@@ -1179,12 +1264,31 @@ a:focus-visible {
 .race-selector-label {
   display: grid;
   gap: 0.45rem;
-  font-weight: 600;
+  font-family: var(--font-teko);
+  font-size: 1.02rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(231, 239, 233, 0.86);
+}
+
+.contact-form label input,
+.contact-form label select,
+.contact-form label textarea,
+.member-form label input,
+.member-form label select,
+.member-form label textarea,
+.race-selector-label select {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
 }
 
 .form-note {
   margin: 0;
-  color: #5c6f69;
+  color: rgba(231, 239, 233, 0.72);
   font-size: 0.95rem;
 }
 
@@ -1251,6 +1355,14 @@ a:focus-visible {
   width: min(1240px, calc(100% - 3rem));
 }
 
+.league-hero-layout--landing {
+  min-height: clamp(620px, 74vh, 860px);
+  align-content: start;
+  justify-items: start;
+  padding-top: 4.9rem;
+  padding-bottom: 6.2rem;
+}
+
 .ranking-section,
 .auth-section,
 .rules-section {
@@ -1259,51 +1371,110 @@ a:focus-visible {
 
 .ranking-head {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  align-items: end;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: stretch;
   margin-bottom: 1.5rem;
+}
+
+.ranking-head-copy {
+  flex: 0 0 auto;
+  width: 100%;
+}
+
+.ranking-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.85rem;
+  width: 100%;
+}
+
+.section h2,
+.section h3,
+.league-main h2,
+.league-main h3,
+.league-main h4,
+.league-main h5,
+.ranking-head h2,
+.panel-intro h3,
+.card-head h3,
+.race-event-card h4,
+.race-mode-card h5 {
+  color: var(--white);
+}
+
+.section-heading p,
+.ranking-head p,
+.panel-intro p,
+.form-note,
+.member-entry-note,
+.section-heading .member-entry-note,
+.strava-status,
+.field-link-copy,
+.session-label,
+.session-user span,
+.race-event-card p,
+.race-mode-card p,
+.races-placeholder p,
+.legal-card p,
+.rule-card p {
+  color: rgba(231, 239, 233, 0.72);
 }
 
 .gender-switch {
   display: inline-grid;
   grid-template-columns: repeat(3, minmax(118px, 1fr));
-  gap: 0.35rem;
-  padding: 0.35rem;
-  background: rgba(31, 36, 33, 0.08);
-  border-radius: 999px;
-  width: min(100%, 430px);
+  gap: 0;
+  padding: 0;
+  background: #101311;
+  border: 1px solid rgba(204, 255, 0, 0.18);
+  border-radius: 0;
+  width: auto;
+  min-width: 355px;
+  flex: 0 0 auto;
 }
 
 .gender-option {
-  border: 0;
-  border-radius: 999px;
+  border: 1px solid transparent;
+  border-radius: 0;
   background: transparent;
   padding: 0.85rem 1rem;
+  margin: 0;
+  min-height: 50px;
   cursor: pointer;
-  font-weight: 800;
-  color: #4e615c;
-  transition: background-color 180ms ease, color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  font-family: var(--font-teko);
+  font-size: 1.04rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(231, 239, 233, 0.66);
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
 }
 
 .gender-option:hover,
 .gender-option:focus-visible {
-  background: rgba(31, 36, 33, 0.08);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .gender-option.is-active {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+  transform: none;
+  box-shadow: none;
 }
 
-.gender-option.is-men.is-active {
-  background: var(--sky);
-  color: var(--coal);
+.gender-option.is-men.is-active,
+.gender-option.is-men.is-active:hover,
+.gender-option.is-men.is-active:focus-visible {
+  background: #00FFFF !important;
+  color: var(--coal) !important;
+  border-color: #00FFFF !important;
 }
 
 .gender-option.is-mixed.is-active {
-  background: #111111;
-  color: var(--white);
+  background: var(--lime) !important;
+  color: var(--coal) !important;
+  border-color: var(--lime) !important;
 }
 
 .gender-option.is-women.is-active {
@@ -1315,22 +1486,30 @@ a:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
+  flex: 1 1 620px;
+  justify-content: flex-start;
 }
 
 .tab-button {
-  border: 0;
-  border-radius: 999px;
+  border: 1px solid rgba(204, 255, 0, 0.18);
+  border-radius: 0;
   padding: 0.85rem 1rem;
-  background: rgba(31, 36, 33, 0.08);
+  min-height: 50px;
+  background: #101311;
   cursor: pointer;
-  font-weight: 800;
-  color: #4e615c;
+  font-family: var(--font-teko);
+  font-size: 1.04rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(231, 239, 233, 0.68);
 }
 
 .tab-button.is-active {
-  background: var(--coal);
-  color: var(--white);
+  background: var(--lime);
+  color: #091106;
+  border-color: var(--lime);
 }
 
 .ranking-panel {
@@ -1342,19 +1521,39 @@ a:focus-visible {
 }
 
 .panel-intro {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
   margin-bottom: 1rem;
+  min-height: 92px;
 }
 
 .table-shell {
   overflow-x: auto;
-  border-radius: var(--radius-lg);
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: var(--shadow);
+  border-radius: 0;
+  background:
+    linear-gradient(180deg, #111413 0%, #1a1e1b 100%);
+  border: 1px solid rgba(204, 255, 0, 0.18);
+  box-shadow: none;
 }
 
 .ranking-table {
   width: 100%;
+  min-width: 980px;
   border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.ranking-col-position {
+  width: 108px;
+}
+
+.ranking-col-metric {
+  width: 320px;
+}
+
+.ranking-col-points {
+  width: 144px;
 }
 
 .ranking-table th,
@@ -1362,17 +1561,31 @@ a:focus-visible {
   padding: 1rem;
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid rgba(31, 36, 33, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--ink);
+}
+
+.ranking-table thead th {
+  font-family: var(--font-teko);
+  font-size: 1.02rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ranking-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .table-shell.filter-men .ranking-table thead th {
-  background: var(--sky);
-  color: var(--coal);
+  background: #00FFFF !important;
+  color: var(--coal) !important;
 }
 
 .table-shell.filter-mixed .ranking-table thead th {
-  background: #111111;
-  color: var(--white);
+  background: var(--lime) !important;
+  color: var(--coal) !important;
 }
 
 .table-shell.filter-women .ranking-table thead th {
@@ -1383,7 +1596,20 @@ a:focus-visible {
 .athlete-cell {
   display: flex;
   gap: 0.9rem;
-  min-width: 240px;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.athlete-copy {
+  min-width: 0;
+  display: grid;
+  gap: 0.16rem;
+}
+
+.athlete-copy strong,
+.athlete-copy > div {
+  display: block;
+  overflow-wrap: anywhere;
 }
 
 .athlete-avatar,
@@ -1402,26 +1628,78 @@ a:focus-visible {
   align-items: center;
   gap: 0.35rem;
   padding: 0.45rem 0.7rem;
-  border-radius: 999px;
+  border-radius: 0;
   font-size: 0.9rem;
-  font-weight: 700;
+  font-family: var(--font-teko);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.position-cell,
+.points-cell {
+  white-space: nowrap;
+}
+
+.position-cell,
+.ranking-table thead th:first-child {
+  text-align: center;
+}
+
+.metric-cell,
+.ranking-table thead th:nth-child(3) {
+  text-align: center;
+}
+
+.metric-cell {
+  white-space: nowrap;
+}
+
+.points-cell,
+.ranking-table thead th:nth-child(4) {
+  text-align: right;
+}
+
+.position-badge {
+  justify-content: center;
+  min-width: 66px;
 }
 
 .position-badge,
 .metric-pill,
 .mode-chip,
 .card-chip {
-  background: rgba(31, 36, 33, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(204, 255, 0, 0.16);
 }
 
 .card-chip.alt {
-  background: rgba(252, 82, 0, 0.12);
-  color: #c14a00;
+  background: rgba(252, 82, 0, 0.14);
+  color: #ffb38d;
+  border-color: rgba(252, 82, 0, 0.36);
 }
 
 .points-cell {
   font-weight: 800;
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-pill {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-inline: 0.55rem;
+  font-size: 0.84rem;
+  letter-spacing: 0.035em;
+  line-height: 1.2;
 }
 
 .general-breakdown-button {
@@ -1429,9 +1707,12 @@ a:focus-visible {
   padding: 0;
   border: 0;
   background: transparent;
-  color: #3c6d7a;
+  color: var(--lime);
+  font-family: var(--font-teko);
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .general-breakdown {
@@ -1471,10 +1752,11 @@ a:focus-visible {
   max-width: 760px;
   margin: 0 auto;
   padding: 2.2rem 1.5rem 1.8rem;
-  border-radius: 30px;
+  border-radius: 0;
   background: linear-gradient(180deg, #1e1f1e 0%, #272827 100%);
+  border: 1px solid rgba(204, 255, 0, 0.18);
   color: var(--ink);
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 
 .member-zone-header {
@@ -1535,11 +1817,12 @@ a:focus-visible {
   align-items: center;
   min-height: 32px;
   padding: 0.35rem 0.9rem;
-  border-radius: 999px;
+  border-radius: 0;
   background: var(--lime);
   color: var(--coal);
   font-size: 0.82rem;
-  font-weight: 900;
+  font-family: var(--font-teko);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -1558,9 +1841,9 @@ a:focus-visible {
 
 .member-zone-metric {
   padding: 1.35rem 1.2rem;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(204, 255, 0, 0.14);
   text-align: center;
 }
 
@@ -1622,6 +1905,7 @@ a:focus-visible {
 .race-event-card {
   padding: 1.5rem;
   background: linear-gradient(180deg, #1e2523 0%, #2b3532 100%);
+  border: 1px solid rgba(204, 255, 0, 0.16);
   color: var(--ink);
 }
 
@@ -1652,11 +1936,8 @@ a:focus-visible {
   font-size: 0.94rem;
 }
 
-.section-heading .member-entry-note {
-  color: #5c6f69;
-}
-
 .inline-form-link {
+  color: var(--lime);
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 0.2em;
@@ -1680,9 +1961,9 @@ a:focus-visible {
 .session-box,
 .races-placeholder {
   padding: 1.1rem;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(204, 255, 0, 0.16);
 }
 
 .strava-status {
@@ -1702,8 +1983,9 @@ a:focus-visible {
   position: relative;
   width: 58px;
   height: 32px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(204, 255, 0, 0.18);
 }
 
 .switch-thumb {
@@ -1712,8 +1994,8 @@ a:focus-visible {
   left: 4px;
   width: 24px;
   height: 24px;
-  border-radius: 50%;
-  background: var(--white);
+  border-radius: 0;
+  background: var(--lime);
   transition: transform 180ms ease;
 }
 
@@ -1766,9 +2048,9 @@ a:focus-visible {
 .race-mode-editor,
 .race-mode-card {
   padding: 1rem;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(204, 255, 0, 0.14);
 }
 
 .race-mode-actions,
@@ -2164,12 +2446,12 @@ a:focus-visible {
 
 .legal-card {
   padding: 1.5rem;
-  border-radius: var(--radius-lg);
+  border-radius: 0;
   background:
     linear-gradient(180deg, #1e2523 0%, #2b3532 100%);
   border: 1px solid rgba(204, 255, 0, 0.12);
   color: var(--ink);
-  box-shadow: var(--shadow);
+  box-shadow: none;
 }
 
 .legal-card h3 {
@@ -2208,6 +2490,15 @@ a:focus-visible {
   .footer-bottom-content {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .ranking-controls {
+    justify-content: flex-start;
+    align-items: stretch;
+  }
+
+  .panel-intro {
+    min-height: 0;
   }
 
   .footer-brand-grid,
@@ -2342,8 +2633,16 @@ a:focus-visible {
     font-size: clamp(1.54rem, 7.3vw, 2.27rem);
   }
 
+  .league-hero-eyebrow {
+    font-size: clamp(1.54rem, 7.3vw, 2.27rem);
+  }
+
   .hero-headline {
     max-width: 10.4ch;
+    font-size: clamp(2.64rem, 11vw, 3.85rem);
+  }
+
+  .league-hero-title {
     font-size: clamp(2.64rem, 11vw, 3.85rem);
   }
 
@@ -2354,6 +2653,12 @@ a:focus-visible {
   }
 
   .hero-support {
+    max-width: 100%;
+    font-size: 0.84rem;
+    line-height: 1.28;
+  }
+
+  .league-hero-lead {
     max-width: 100%;
     font-size: 0.84rem;
     line-height: 1.28;
@@ -2400,8 +2705,18 @@ a:focus-visible {
     align-items: stretch;
   }
 
+  .ranking-controls,
+  .ranking-tabs,
   .gender-switch {
     width: 100%;
+  }
+
+  .gender-switch {
+    min-width: 0;
+  }
+
+  .tab-button {
+    flex: 1 1 100%;
   }
 
   .ranking-table th:nth-child(3),

@@ -16,9 +16,21 @@ type LeagueHeaderProps = {
   title: string;
   lead: string;
   compact?: boolean;
+  hideSidecard?: boolean;
+  landingAligned?: boolean;
+  titleLines?: string[];
 };
 
-export function LeagueHeader({ member, subtitle, title, lead, compact = false }: LeagueHeaderProps) {
+export function LeagueHeader({
+  member,
+  subtitle,
+  title,
+  lead,
+  compact = false,
+  hideSidecard = false,
+  landingAligned = false,
+  titleLines,
+}: LeagueHeaderProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [sessionMenuOpen, setSessionMenuOpen] = useState(false);
@@ -103,13 +115,22 @@ export function LeagueHeader({ member, subtitle, title, lead, compact = false }:
         />
       </nav>
 
-      <section className={`league-hero-layout ${compact ? "compact-layout" : ""}`}>
-        <div className="hero-copy">
-          <p className="eyebrow">{subtitle}</p>
-          <h1>{title}</h1>
-          <p className="lead">{lead}</p>
+      <section
+        className={`league-hero-layout ${compact ? "compact-layout" : ""} ${
+          landingAligned ? "league-hero-layout--landing" : ""
+        }`}
+      >
+        <div className={`hero-copy league-hero-copy ${landingAligned ? "league-hero-copy--landing" : ""}`}>
+          <p className="eyebrow league-hero-eyebrow">{subtitle}</p>
+          <h1 className={`league-hero-title ${titleLines?.length ? "league-hero-title--stacked" : ""}`}>
+            {titleLines?.length
+              ? titleLines.map((line) => <span key={line}>{line}</span>)
+              : title}
+          </h1>
+          <span className="hero-divider league-hero-divider" aria-hidden="true" />
+          <p className="lead league-hero-lead">{lead}</p>
         </div>
-        {!compact ? (
+        {!compact && !hideSidecard ? (
           <aside className="hero-sidecard">
             <p className="card-kicker">Liga 2026</p>
             <h2>Ranking vivo del club</h2>

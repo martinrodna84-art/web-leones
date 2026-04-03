@@ -78,7 +78,7 @@ export function getGeneralRanking(
 
       return {
         ...member,
-        metricLabel: `${formatNumber(member.yearKm, 1)} km + ${formatInteger(member.yearElevation)} m+ + ${formatInteger(racePoints)} pts carreras`,
+        metricLabel: `${formatNumber(member.yearKm, 1)} km / ${formatInteger(member.yearElevation)} m+ / ${formatInteger(racePoints)} pts`,
         points: kmPoints + elevationPoints + racePoints,
       };
     })

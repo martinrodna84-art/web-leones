@@ -213,54 +213,50 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
     <main className="league-main">
       <section className="ranking-section" id="clasificaciones">
         <div className="ranking-head">
-          <div>
+          <div className="ranking-head-copy">
             <p className="eyebrow dark">Clasificaciones</p>
-            <h2>General, DevoraKm, Devora+ y DevoraCarreras</h2>
-            <p>
-              La liga ya vive dentro de Next.js con una capa de dominio tipada y reglas de
-              scoring separadas del markup, mientras la identidad y los perfiles ya se
-              gestionan desde Supabase.
-            </p>
           </div>
 
-          <div className="gender-switch" role="tablist" aria-label="Clasificacion por sexo">
-            <button
-              className={`gender-option is-men ${currentGender === "men" ? "is-active" : ""}`}
-              type="button"
-              onClick={() => setCurrentGender("men")}
-            >
-              Masculino
-            </button>
-            <button
-              className={`gender-option is-mixed ${currentGender === "mixed" ? "is-active" : ""}`}
-              type="button"
-              onClick={() => setCurrentGender("mixed")}
-            >
-              Mixto
-            </button>
-            <button
-              className={`gender-option is-women ${currentGender === "women" ? "is-active" : ""}`}
-              type="button"
-              onClick={() => setCurrentGender("women")}
-            >
-              Femenino
-            </button>
-          </div>
-        </div>
+          <div className="ranking-controls">
+            <div className="ranking-tabs" role="tablist" aria-label="Clasificaciones Liga Felina">
+              <button className={`tab-button ${currentTab === "general" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("general")}>
+                Clasificacion general
+              </button>
+              <button className={`tab-button ${currentTab === "km" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("km")}>
+                DevoraKm
+              </button>
+              <button className={`tab-button ${currentTab === "elevation" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("elevation")}>
+                Devora+
+              </button>
+              <button className={`tab-button ${currentTab === "races" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("races")}>
+                DevoraCarreras
+              </button>
+            </div>
 
-        <div className="ranking-tabs" role="tablist" aria-label="Clasificaciones Liga Felina">
-          <button className={`tab-button ${currentTab === "general" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("general")}>
-            Clasificacion general
-          </button>
-          <button className={`tab-button ${currentTab === "km" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("km")}>
-            DevoraKm
-          </button>
-          <button className={`tab-button ${currentTab === "elevation" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("elevation")}>
-            Devora+
-          </button>
-          <button className={`tab-button ${currentTab === "races" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("races")}>
-            DevoraCarreras
-          </button>
+            <div className="gender-switch" role="tablist" aria-label="Clasificacion por categoria">
+              <button
+                className={`gender-option is-men ${currentGender === "men" ? "is-active" : ""}`}
+                type="button"
+                onClick={() => setCurrentGender("men")}
+              >
+                Leones
+              </button>
+              <button
+                className={`gender-option is-mixed ${currentGender === "mixed" ? "is-active" : ""}`}
+                type="button"
+                onClick={() => setCurrentGender("mixed")}
+              >
+                Mixto
+              </button>
+              <button
+                className={`gender-option is-women ${currentGender === "women" ? "is-active" : ""}`}
+                type="button"
+                onClick={() => setCurrentGender("women")}
+              >
+                Leonas
+              </button>
+            </div>
+          </div>
         </div>
 
         <article className={`ranking-panel ${currentTab === "general" ? "is-active" : ""}`}>
@@ -638,6 +634,12 @@ function LeaderboardTable({
   return (
     <div className={`table-shell filter-${currentGender}`}>
       <table className="ranking-table">
+        <colgroup>
+          <col className="ranking-col-position" />
+          <col className="ranking-col-athlete" />
+          <col className="ranking-col-metric" />
+          <col className="ranking-col-points" />
+        </colgroup>
         <thead>
           <tr>
             <th>Posicion</th>
@@ -653,18 +655,18 @@ function LeaderboardTable({
 
             return (
               <tr key={row.id}>
-                <td>
+                <td className="position-cell">
                   <span className="position-badge">
                     <span className="position-icon">{getRankIcon(index + 1)}</span>
                     {index + 1}
                   </span>
                 </td>
-                <td>
+                <td className="athlete-column">
                   <div className="athlete-cell">
                     <div className="athlete-avatar">
                       <Image src={resolvePhoto(row)} alt={`Foto de ${getDisplayName(row)}`} width={56} height={56} unoptimized />
                     </div>
-                    <div>
+                    <div className="athlete-copy">
                       <strong>{getDisplayName(row)}</strong>
                       <div>{row.memberNumber}</div>
                       {isGeneral ? (
@@ -704,7 +706,7 @@ function LeaderboardTable({
                     </div>
                   </div>
                 </td>
-                <td>
+                <td className="metric-cell">
                   <span className="metric-pill">{row.metricLabel}</span>
                 </td>
                 <td className="points-cell">{formatInteger(row.points)} pts</td>
