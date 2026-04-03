@@ -12,8 +12,12 @@
 ## Main Routes
 
 - `/` public club homepage
+- `/contacto` public contact page for club enquiries
 - `/liga-felina` league and ranking experience
-- `/liga-felina/registro` member auth and profile area
+- `/liga-felina/registro` member registration only
+- `/liga-felina/acceso` member login and password recovery
+- `/liga-felina/perfil` member dashboard / personal control panel
+- `/liga-felina/perfil/editar` member profile editing, photo management, and Strava connection
 - `/bases` league rules page
 
 ## Architecture

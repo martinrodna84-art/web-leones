@@ -1,21 +1,30 @@
 import Link from "next/link";
 
-import { socialLinks } from "@/lib/site-content";
+import { SocialIcon } from "@/components/social-icon";
+import { socialBarLinks } from "@/lib/site-content";
 
 export function SocialBar() {
   return (
     <div className="social-bar">
-      <p className="social-copy">Unete a Los Leones del Trail y transforma tu pasion en un rugido.</p>
-      <div className="social-links" aria-label="Redes del club">
-        {socialLinks.map((link) => (
-          <a key={link.href} href={link.href} target="_blank" rel="noreferrer" aria-label={link.label} title={link.label}>
-            <span className="social-icon">{link.symbol}</span>
-          </a>
-        ))}
+      <div className="social-message">
+        <p className="social-copy">Unete a Los Leones del Trail y transforma tu pasion en un rugido.</p>
+        <Link className="social-inline-link" href="/liga-felina/registro">
+          <span className="social-inline-label">{"AQU\u00cd"}</span>
+        </Link>
       </div>
-      <Link className="social-cta" href="/liga-felina/registro">
-        AQUi
-      </Link>
+      <div className="social-links" aria-label="Redes del club">
+        {socialBarLinks.map((link) =>
+          link.href ? (
+            <a key={link.label} href={link.href} target="_blank" rel="noreferrer" aria-label={link.label} title={link.label}>
+              <SocialIcon label={link.label} />
+            </a>
+          ) : (
+            <span key={link.label} aria-label={`${link.label} proximamente`} title={`${link.label} proximamente`}>
+              <SocialIcon label={link.label} />
+            </span>
+          ),
+        )}
+      </div>
     </div>
   );
 }

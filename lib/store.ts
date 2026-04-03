@@ -43,15 +43,6 @@ function ensureAuthenticated(member: Member | null): Member {
   return member;
 }
 
-function ensureAdmin(member: Member | null): Member {
-  const currentMember = ensureAuthenticated(member);
-  if (!currentMember.isAdmin) {
-    throw new Error("Solo la administracion puede gestionar eventos.");
-  }
-
-  return currentMember;
-}
-
 export function getSnapshot(
   activeMember: SessionMember | null,
   members: Member[],
@@ -79,7 +70,7 @@ export function upsertRaceEvent(
   payload: RaceEventPayload,
   eventId?: string,
 ): RaceEvent {
-  const admin = ensureAdmin(member);
+  const currentMember = ensureAuthenticated(member);
   const name = payload.name.trim();
   const edition = payload.edition.trim();
   const modalities = payload.modalities
@@ -94,7 +85,7 @@ export function upsertRaceEvent(
     .filter((modality) => modality.name && modality.date && modality.time);
 
   if (!name || !edition || !modalities.length) {
-    throw new Error("Debes completar el evento y al menos una modalidad.");
+    throw new Error("Debes completar la carrera y al menos una modalidad.");
   }
 
   const appStore = getStore();
@@ -102,7 +93,7 @@ export function upsertRaceEvent(
   if (eventId) {
     const index = appStore.raceEvents.findIndex((eventItem) => eventItem.id === eventId);
     if (index === -1) {
-      throw new Error("No hemos encontrado el evento que intentas editar.");
+      throw new Error("No hemos encontrado la carrera que intentas editar.");
     }
 
     const updatedEvent: RaceEvent = {
@@ -120,7 +111,7 @@ export function upsertRaceEvent(
     name,
     edition,
     createdAt: new Date().toISOString(),
-    createdBy: admin.id,
+    createdBy: currentMember.id,
     modalities,
   };
   appStore.raceEvents.push(newEvent);
@@ -128,7 +119,7 @@ export function upsertRaceEvent(
 }
 
 export function deleteRaceEvent(member: Member | null, eventId: string): void {
-  ensureAdmin(member);
+  ensureAuthenticated(member);
   const appStore = getStore();
   appStore.raceEvents = appStore.raceEvents.filter((eventItem) => eventItem.id !== eventId);
   appStore.raceClaims = appStore.raceClaims.filter((claim) => claim.eventId !== eventId);
@@ -173,7 +164,7 @@ export async function createRaceClaim(
   );
 
   if (existingClaim) {
-    throw new Error("Este evento ya esta bloqueado para tu perfil.");
+    throw new Error("Esta carrera ya esta bloqueada para tu perfil.");
   }
 
   const activityId = parseStravaActivityId(payload.activityUrl.trim());

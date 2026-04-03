@@ -1,21 +1,21 @@
 import { LeagueHeader } from "@/components/league-header";
-import { RegisterExperience } from "@/components/league/register-experience";
+import { RegisterSignupExperience } from "@/components/league/register-signup-experience";
 import { SiteFooter } from "@/components/site-footer";
 import { SocialBar } from "@/components/social-bar";
-import type { LeagueSnapshot } from "@/lib/types";
+import type { SessionMember } from "@/lib/types";
 
-export function RegisterPage({ snapshot }: { snapshot: LeagueSnapshot }) {
+export function RegisterPage({ member }: { member: SessionMember | null }) {
   return (
     <>
       <SocialBar />
       <LeagueHeader
-        member={snapshot.activeMember}
+        member={member}
         subtitle="Registro de socios"
-        title="Registro e inicio de sesion"
-        lead="Registro, acceso y gestion de perfil con Supabase Auth, cookies SSR y una base de datos preparada para conectar Strava sin depender del navegador como fuente principal de verdad."
+        title="Crea tu perfil dentro de la manada"
+        lead="El alta de socios queda ahora separada del acceso y de la edicion del perfil para que registrarse sea rapido, claro y centrado solo en crear la cuenta."
         compact
       />
-      <RegisterExperience snapshot={snapshot} />
+      <RegisterSignupExperience />
       <SiteFooter />
     </>
   );

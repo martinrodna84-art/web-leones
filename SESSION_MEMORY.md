@@ -6,7 +6,10 @@
 - Main routes:
   - `/` public club homepage.
   - `/liga-felina` league/ranking experience.
-  - `/liga-felina/registro` member auth/profile area.
+  - `/liga-felina/registro` member registration only.
+  - `/liga-felina/acceso` member login and password recovery.
+  - `/liga-felina/perfil` member dashboard / personal control panel.
+  - `/liga-felina/perfil/editar` member profile editing, photo management, and Strava connection.
   - `/bases` league rules page.
 - Important repo rule: before changing Next.js behavior, read the local docs under `node_modules/next/dist/docs/`.
 
@@ -40,8 +43,10 @@
   - `SUPABASE_SECRET_KEY`
   - `STRAVA_CLIENT_ID`
   - `STRAVA_CLIENT_SECRET`
-- Migration present:
+- Migrations present:
   - `supabase/migrations/20260402133000_member_profiles_auth.sql`
+  - `supabase/migrations/20260402170000_strava_connections.sql`
+  - `supabase/migrations/20260402173000_fix_trigger_search_path.sql`
 - RPCs implemented:
   - `create_member_profile`
   - `update_current_member_profile`
@@ -53,7 +58,7 @@
 ### Strava
 - Real OAuth flow exists under `app/api/strava/*`.
 - Fallback/mock Strava mode exists for local/demo flows.
-- Stored Strava access tokens are currently held in the in-memory store, not durable storage.
+- Stored Strava access tokens now persist in Supabase via `strava_connections`.
 
 ### API Surface
 - Member/auth:
@@ -63,6 +68,7 @@
   - `app/api/app/auth/password/route.ts`
   - `app/api/app/profile/route.ts`
   - `app/api/app/profile/strava/route.ts`
+  - `app/api/app/profile/strava/sync/route.ts`
 - League:
   - `app/api/app/race-events/route.ts`
   - `app/api/app/race-events/[eventId]/route.ts`
@@ -72,16 +78,14 @@
 - Strava:
   - `app/api/strava/login/route.ts`
   - `app/api/strava/callback/route.ts`
-  - `app/api/strava/logout/route.ts`
-  - `app/api/strava/me/route.ts`
-  - `app/api/strava/activity/route.ts`
+  - `app/api/strava/webhook/route.ts`
 
 ### Current Risks / Observations
 - Race events and claims reset on server restart because `lib/store.ts` is in-memory.
-- Real Strava connection state also depends partly on in-memory data.
+- The new auth split leaves some legacy client components in `components/league/*` unused; the active ones are `register-signup-experience.tsx`, `member-access-experience.tsx`, and `profile-experience.tsx`.
 - Several UI strings show mojibake characters, suggesting encoding issues in source text.
 - Many user-facing forms are functional, but the public contact form is only presentational.
-- `README.md` is still the default create-next-app template and does not describe the real project.
+- Webhook registration in the Strava app still requires manual setup with a public HTTPS callback URL.
 
 ### Environment Limitations During Analysis
 - `rg`, `git`, `node`, and `npm` were not available in PATH in this session.
@@ -90,5 +94,5 @@
 ### Best Next Focus
 - Persist race events and race claims in Supabase.
 - Fix text encoding issues across UI copy.
-- Replace the placeholder README with project-specific setup and architecture notes.
+- Remove or consolidate the legacy unused auth components under `components/league/*`.
 - Add automated validation once Node tooling is available in the environment.

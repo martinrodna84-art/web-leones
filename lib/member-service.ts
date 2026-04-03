@@ -1,5 +1,9 @@
 import { MOCK_STRAVA_PROFILE, seedMembers } from "@/lib/mock-data";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
+import {
+  clearSupabaseSessionSilently,
+  isRecoverableSupabaseSessionError,
+} from "@/lib/supabase/session";
 import { createClient as createServerSupabaseClient } from "@/lib/supabase/server";
 import type { Database, Json } from "@/lib/supabase/types";
 import type {
@@ -177,13 +181,6 @@ function mapSupabaseError(error: unknown, fallback: string): Error {
   return new Error(message || fallback);
 }
 
-function isSupabaseSessionMissingError(error: unknown): boolean {
-  return (
-    error instanceof Error &&
-    (error.name === "AuthSessionMissingError" || error.message.includes("Auth session missing"))
-  );
-}
-
 async function fetchCurrentProfileWithClient(): Promise<SessionMember | null> {
   const supabase = await createServerSupabaseClient();
   const {
@@ -192,7 +189,8 @@ async function fetchCurrentProfileWithClient(): Promise<SessionMember | null> {
   } = await supabase.auth.getUser();
 
   if (userError) {
-    if (isSupabaseSessionMissingError(userError)) {
+    if (isRecoverableSupabaseSessionError(userError)) {
+      await clearSupabaseSessionSilently(supabase);
       return null;
     }
 
@@ -211,6 +209,11 @@ async function fetchCurrentProfileWithClient(): Promise<SessionMember | null> {
 
   if (error) {
     throw mapSupabaseError(error, "No hemos podido cargar tu perfil.");
+  }
+
+  if (!data) {
+    await clearSupabaseSessionSilently(supabase);
+    return null;
   }
 
   return data ? mapSessionMemberRow(data as MemberProfileRow) : null;

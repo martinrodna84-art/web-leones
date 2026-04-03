@@ -14,7 +14,7 @@ function withMessage(path: string, message: string) {
 
 function normalizeReturnTo(value: string | null): string {
   if (!value || !value.startsWith("/")) {
-    return "/liga-felina/registro";
+    return "/liga-felina/perfil";
   }
 
   return value;

@@ -22,7 +22,7 @@ export async function GET(request: Request) {
   const error = url.searchParams.get("error");
   const cookieStore = await cookies();
   const storedState = cookieStore.get(STRAVA_STATE_COOKIE)?.value ?? "";
-  const returnTo = cookieStore.get(STRAVA_RETURN_TO_COOKIE)?.value || "/liga-felina/registro";
+  const returnTo = cookieStore.get(STRAVA_RETURN_TO_COOKIE)?.value || "/liga-felina/perfil";
   const member = await getCurrentSessionMember();
 
   if (!member) {

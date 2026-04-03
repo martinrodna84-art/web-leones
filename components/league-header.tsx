@@ -1,7 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
-import { SessionBadge } from "@/components/session-badge";
+import { LeagueSessionMenu } from "@/components/league-session-menu";
+import { teko } from "@/lib/fonts";
+import { isHrefActive } from "@/lib/navigation";
 import type { Member } from "@/lib/types";
 
 type LeagueHeaderProps = {
@@ -13,31 +19,89 @@ type LeagueHeaderProps = {
 };
 
 export function LeagueHeader({ member, subtitle, title, lead, compact = false }: LeagueHeaderProps) {
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [sessionMenuOpen, setSessionMenuOpen] = useState(false);
+
+  function closeNavigation() {
+    setMenuOpen(false);
+    setSessionMenuOpen(false);
+  }
+
   return (
     <header className={`league-hero ${compact ? "compact-hero" : ""}`}>
-      <div className="hero-topbar">
-        <Link className="hero-brand" href="/">
-          <Image src="/assets/logos/logo_2026.png" alt="Logo de Los Leones del Trail" width={72} height={72} priority />
-          <span>
-            <strong>LOS LEONES DEL TRAIL</strong>
-            <small>{subtitle}</small>
-          </span>
+      <nav className={`main-nav league-main-nav ${teko.className}`}>
+        <Link className="brand" href="/">
+          <Image
+            src="/assets/logos/logo_header_clean.png"
+            alt="Logo de Los Leones del Trail"
+            width={340}
+            height={51}
+            className="brand-logo"
+            priority
+            unoptimized
+          />
         </Link>
-        <nav className="hero-links">
-          <Link href="/">Volver al club</Link>
-          <Link href="/bases">Bases</Link>
-          <Link href="/liga-felina">Liga Felina</Link>
-          <Link className="hero-cta" href="/liga-felina/registro">
-            Registrarse
+
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-expanded={menuOpen}
+          aria-controls="league-menu"
+          onClick={() => {
+            setMenuOpen((current) => !current);
+            setSessionMenuOpen(false);
+          }}
+        >
+          Menu
+        </button>
+
+        <div className={`nav-panel ${menuOpen ? "is-open" : ""}`} id="league-menu">
+          <Link
+            className={`nav-link ${isHrefActive(pathname, "", "/") ? "is-active" : ""}`}
+            href="/"
+            aria-current={isHrefActive(pathname, "", "/") ? "page" : undefined}
+            onClick={closeNavigation}
+          >
+            Volver al club
           </Link>
-        </nav>
-        <SessionBadge
+          <Link
+            className={`nav-link ${isHrefActive(pathname, "", "/bases") ? "is-active" : ""}`}
+            href="/bases"
+            aria-current={isHrefActive(pathname, "", "/bases") ? "page" : undefined}
+            onClick={closeNavigation}
+          >
+            Bases
+          </Link>
+          <Link
+            className={`nav-link ${isHrefActive(pathname, "", "/liga-felina") ? "is-active" : ""}`}
+            href="/liga-felina"
+            aria-current={isHrefActive(pathname, "", "/liga-felina") ? "page" : undefined}
+            onClick={closeNavigation}
+          >
+            Liga Felina
+          </Link>
+          <Link
+            className={`nav-link ${isHrefActive(pathname, "", "/contacto") ? "is-active" : ""}`}
+            href="/contacto"
+            aria-current={isHrefActive(pathname, "", "/contacto") ? "page" : undefined}
+            onClick={closeNavigation}
+          >
+            Contacto
+          </Link>
+        </div>
+
+        <LeagueSessionMenu
           member={member}
-          href="/liga-felina/registro"
-          guestSubtitle="Accede para gestionar tu perfil"
-          memberSubtitle={member?.stravaConnected ? "Strava conectado" : "Perfil del club"}
+          open={sessionMenuOpen}
+          onOpenChange={(nextOpen) => {
+            setSessionMenuOpen(nextOpen);
+            if (nextOpen) {
+              setMenuOpen(false);
+            }
+          }}
         />
-      </div>
+      </nav>
 
       <section className={`league-hero-layout ${compact ? "compact-layout" : ""}`}>
         <div className="hero-copy">
@@ -53,7 +117,7 @@ export function LeagueHeader({ member, subtitle, title, lead, compact = false }:
               <li>Clasificacion general por puntos totales</li>
               <li>DevoraKm para el volumen anual</li>
               <li>Devora+ para el desnivel positivo</li>
-              <li>Carreras validadas con flujo listo para Strava</li>
+              <li>DevoraCarreras con flujo de validacion listo para Strava</li>
             </ul>
           </aside>
         ) : null}

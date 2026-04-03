@@ -17,7 +17,7 @@ import {
   getRacePointsFromModality,
   getRankIcon,
 } from "@/lib/scoring";
-import type { Gender, LeagueSnapshot, RaceEvent, RaceModality } from "@/lib/types";
+import type { LeagueGenderFilter, LeagueSnapshot, RaceEvent, RaceModality } from "@/lib/types";
 
 type RankingTab = "general" | "km" | "elevation" | "races";
 
@@ -81,7 +81,7 @@ async function requestJson<T>(input: RequestInfo, init?: RequestInit): Promise<T
 export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
   const router = useRouter();
   const [isPending, startRouteRefresh] = useTransition();
-  const [currentGender, setCurrentGender] = useState<Gender>("men");
+  const [currentGender, setCurrentGender] = useState<LeagueGenderFilter>("mixed");
   const [currentTab, setCurrentTab] = useState<RankingTab>("general");
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [eventForm, setEventForm] = useState<EventFormState | null>(null);
@@ -101,7 +101,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
   const selectedEvent =
     events.find((eventItem) => eventItem.id === effectiveSelectedEventId) ?? events[0] ?? null;
   const claimedEventIds = activeMember ? getClaimedEventIds(snapshot.raceClaims, activeMember.id) : new Set<string>();
-  const isAdmin = Boolean(activeMember?.isAdmin);
+  const canManageRaceEvents = Boolean(activeMember);
   const rankings = {
     general: getGeneralRanking(snapshot.members, snapshot.raceClaims, currentGender),
     km: getKmRanking(snapshot.members, currentGender),
@@ -131,7 +131,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
   }
 
   async function handleDeleteEvent(eventId: string) {
-    if (!window.confirm("Se borrara el evento completo con sus validaciones. Continuar?")) {
+    if (!window.confirm("Se borrara la carrera completa con sus validaciones. Continuar?")) {
       return;
     }
 
@@ -141,7 +141,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
       });
       refreshPage();
     } catch (error) {
-      setClaimNote(error instanceof Error ? error.message : "No se pudo borrar el evento.");
+      setClaimNote(error instanceof Error ? error.message : "No se pudo borrar la carrera.");
       setCurrentTab("races");
     }
   }
@@ -182,7 +182,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
       setEventForm(null);
       refreshPage();
     } catch (error) {
-      setEventNote(error instanceof Error ? error.message : "No se pudo guardar el evento.");
+      setEventNote(error instanceof Error ? error.message : "No se pudo guardar la carrera.");
     }
   }
 
@@ -215,7 +215,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
         <div className="ranking-head">
           <div>
             <p className="eyebrow dark">Clasificaciones</p>
-            <h2>General, DevoraKm, Devora+ y Carreras</h2>
+            <h2>General, DevoraKm, Devora+ y DevoraCarreras</h2>
             <p>
               La liga ya vive dentro de Next.js con una capa de dominio tipada y reglas de
               scoring separadas del markup, mientras la identidad y los perfiles ya se
@@ -223,14 +223,28 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
             </p>
           </div>
 
-          <div className="gender-switch" role="tablist" aria-label="Clasificacion por sexo" data-gender={currentGender}>
-            <button className={`gender-option ${currentGender === "men" ? "is-active" : ""}`} type="button" onClick={() => setCurrentGender("men")}>
-              Hombres
+          <div className="gender-switch" role="tablist" aria-label="Clasificacion por sexo">
+            <button
+              className={`gender-option is-men ${currentGender === "men" ? "is-active" : ""}`}
+              type="button"
+              onClick={() => setCurrentGender("men")}
+            >
+              Masculino
             </button>
-            <button className={`gender-option ${currentGender === "women" ? "is-active" : ""}`} type="button" onClick={() => setCurrentGender("women")}>
-              Mujeres
+            <button
+              className={`gender-option is-mixed ${currentGender === "mixed" ? "is-active" : ""}`}
+              type="button"
+              onClick={() => setCurrentGender("mixed")}
+            >
+              Mixto
             </button>
-            <span className="gender-slider" aria-hidden="true" />
+            <button
+              className={`gender-option is-women ${currentGender === "women" ? "is-active" : ""}`}
+              type="button"
+              onClick={() => setCurrentGender("women")}
+            >
+              Femenino
+            </button>
           </div>
         </div>
 
@@ -245,7 +259,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
             Devora+
           </button>
           <button className={`tab-button ${currentTab === "races" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("races")}>
-            Carreras
+            DevoraCarreras
           </button>
         </div>
 
@@ -256,6 +270,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
           </div>
           <LeaderboardTable
             rows={rankings.general}
+            currentGender={currentGender}
             isGeneral
             expandedRows={expandedRows}
             onToggleRow={toggleExpandedRow}
@@ -269,7 +284,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
             <h3>DevoraKm</h3>
             <p>Ranking por kilometros acumulados en el ano en curso y su puntuacion asociada.</p>
           </div>
-          <LeaderboardTable rows={rankings.km} />
+          <LeaderboardTable rows={rankings.km} currentGender={currentGender} />
         </article>
 
         <article className={`ranking-panel ${currentTab === "elevation" ? "is-active" : ""}`}>
@@ -277,38 +292,39 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
             <h3>Devora+</h3>
             <p>Ranking por desnivel positivo acumulado en el ano en curso y su puntuacion asociada.</p>
           </div>
-          <LeaderboardTable rows={rankings.elevation} />
+          <LeaderboardTable rows={rankings.elevation} currentGender={currentGender} />
         </article>
 
         <article className={`ranking-panel ${currentTab === "races" ? "is-active" : ""}`}>
           <div className="panel-intro">
-            <h3>Carreras</h3>
-            <p>Crea eventos, anade modalidades y valida carreras con la URL de Strava de cada socio.</p>
+            <h3>DevoraCarreras</h3>
+            <p>Crea carreras, anade modalidades y valida participaciones con la URL de Strava de cada socio.</p>
           </div>
 
-          <div className="race-admin-bar" hidden={!isAdmin}>
+          <div className="race-admin-bar">
             <div>
-              <strong>Gestion de eventos</strong>
-              <p>Solo la cuenta administradora puede crear y editar carreras.</p>
+              <strong>Gestion de DevoraCarreras</strong>
+              <p>
+                {!activeMember
+                  ? "Inicia sesion para crear, editar, borrar y validar carreras."
+                  : "Tu cuenta puede crear, editar, borrar y validar carreras del calendario de la liga."}
+              </p>
             </div>
-            <button className="button button-primary" type="button" onClick={handleCreateEvent}>
-              Crear evento
+            <button
+              className="button button-primary"
+              type="button"
+              onClick={handleCreateEvent}
+              disabled={!canManageRaceEvents}
+              title={!canManageRaceEvents ? "Inicia sesion para crear carreras." : undefined}
+            >
+              Crear carrera
             </button>
           </div>
 
-          <div className="races-placeholder" hidden={isAdmin}>
-            <strong>Zona de carreras</strong>
-            <p>
-              {activeMember
-                ? "Tu cuenta puede validar carreras, pero solo administracion gestiona eventos."
-                : "Inicia sesion para validar carreras y acceder a tu perfil."}
-            </p>
-          </div>
-
           <label className="race-selector-label">
-            <span>Selecciona un evento</span>
+            <span>Selecciona una carrera</span>
             <select value={effectiveSelectedEventId} onChange={(event) => setSelectedEventId(event.target.value)}>
-              <option value="">Elige un evento para ver sus modalidades</option>
+              <option value="">Elige una carrera para ver sus modalidades</option>
               {events.map((eventItem) => (
                 <option key={eventItem.id} value={eventItem.id}>
                   {eventItem.name} · {eventItem.edition}
@@ -320,13 +336,13 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
           {eventForm ? (
             <form className="race-event-form" onSubmit={handleEventSubmit}>
               <div className="card-head">
-                <h3>{eventForm.id ? "Editar evento" : "Nuevo evento"}</h3>
-                <span className="card-chip">Carreras</span>
+                <h3>{eventForm.id ? "Editar carrera" : "Nueva carrera"}</h3>
+                <span className="card-chip">DevoraCarreras</span>
               </div>
 
               <div className="race-event-grid">
                 <label>
-                  Nombre del evento
+                  Nombre de la carrera
                   <input value={eventForm.name} onChange={(event) => setEventForm((current) => current ? { ...current, name: event.target.value } : current)} />
                 </label>
                 <label>
@@ -479,7 +495,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
 
               <div className="form-actions">
                 <button className="button button-primary" type="submit" disabled={isPending}>
-                  Guardar evento
+                  Guardar carrera
                 </button>
                 <button className="button ghost-button" type="button" onClick={() => setEventForm(null)}>
                   Cancelar
@@ -503,13 +519,13 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
                   </h4>
                   <p>{selectedEvent.modalities.length} modalidad(es) disponibles para validar.</p>
                 </div>
-                {isAdmin ? (
+                {canManageRaceEvents ? (
                   <div className="race-event-actions">
                     <button className="button ghost-button" type="button" onClick={() => handleEditEvent(selectedEvent)}>
-                      Editar evento
+                      Editar carrera
                     </button>
                     <button className="button ghost-button" type="button" onClick={() => handleDeleteEvent(selectedEvent.id)}>
-                      Borrar evento
+                      Borrar carrera
                     </button>
                   </div>
                 ) : null}
@@ -604,6 +620,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
 
 function LeaderboardTable({
   rows,
+  currentGender,
   isGeneral = false,
   expandedRows = [],
   onToggleRow,
@@ -611,6 +628,7 @@ function LeaderboardTable({
   raceClaims = [],
 }: {
   rows: ReturnType<typeof getGeneralRanking>;
+  currentGender: LeagueGenderFilter;
   isGeneral?: boolean;
   expandedRows?: string[];
   onToggleRow?: (memberId: string) => void;
@@ -618,7 +636,7 @@ function LeaderboardTable({
   raceClaims?: LeagueSnapshot["raceClaims"];
 }) {
   return (
-    <div className="table-shell">
+    <div className={`table-shell filter-${currentGender}`}>
       <table className="ranking-table">
         <thead>
           <tr>
@@ -675,7 +693,7 @@ function LeaderboardTable({
                                   ))
                                 ) : (
                                   <li>
-                                    <strong>Carreras:</strong> 0 pts
+                                    <strong>DevoraCarreras:</strong> 0 pts
                                   </li>
                                 )}
                               </ul>

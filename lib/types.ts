@@ -1,4 +1,5 @@
 export type Gender = "men" | "women";
+export type LeagueGenderFilter = "men" | "mixed" | "women";
 
 export type PhotoSource = "upload" | "strava";
 
@@ -120,7 +121,7 @@ export interface RegisterPayload {
   gender: Gender;
   city: string;
   uploadPhoto?: string;
-  useStravaPhoto: boolean;
+  useStravaPhoto?: boolean;
   draftStravaProfile?: StravaProfile | null;
 }
 

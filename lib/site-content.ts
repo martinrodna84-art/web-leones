@@ -5,6 +5,166 @@ export const socialLinks = [
   { href: "https://www.strava.com/clubs/459274", label: "Strava", symbol: "S" },
 ];
 
+export const socialBarLinks = [
+  { href: "https://www.youtube.com/c/LosLeonesdelTrail/", label: "YouTube" },
+  { href: "https://www.facebook.com/LosLeonesdelTrail/", label: "Facebook" },
+  { href: "", label: "X" },
+  { href: "https://www.instagram.com/losleonesdeltrail/", label: "Instagram" },
+  { href: "https://www.strava.com/clubs/459274", label: "Strava" },
+];
+
+export const footerSocialLinks = [
+  { href: "https://www.youtube.com/c/LosLeonesdelTrail/", label: "YouTube" },
+  { href: "https://www.instagram.com/losleonesdeltrail/", label: "Instagram" },
+  { href: "https://www.facebook.com/LosLeonesdelTrail/", label: "Facebook" },
+  { href: "", label: "X" },
+  { href: "https://www.strava.com/clubs/459274", label: "Strava" },
+];
+
+export const footerPrimaryLinks = [
+  { href: "/", label: "Inicio" },
+  { href: "/liga-felina", label: "Liga Felina" },
+  { href: "/bases", label: "Bases" },
+  { href: "/liga-felina/registro", label: "Hazte socio" },
+  { href: "/liga-felina/acceso", label: "Zona de socio" },
+  { href: "/contacto", label: "Contacto" },
+];
+
+export const footerColumns = [
+  {
+    title: "El club",
+    links: [
+      { href: "/#informacion", label: "Quienes somos" },
+      { href: "/#planes", label: "Entrenamientos" },
+      { href: "/liga-felina/registro", label: "Alta de socios" },
+    ],
+  },
+  {
+    title: "Liga Felina",
+    links: [
+      { href: "/liga-felina", label: "Clasificacion" },
+      { href: "/bases", label: "Sistema de puntos" },
+      { href: "/liga-felina/perfil", label: "Mi panel personal" },
+    ],
+  },
+  {
+    title: "Legal y privacidad",
+    links: [
+      { href: "/legal/aviso-legal", label: "Aviso legal" },
+      { href: "/legal/politica-privacidad", label: "Politica de privacidad" },
+      { href: "/legal/politica-cookies", label: "Politica de cookies" },
+    ],
+  },
+];
+
+export const footerLegalLinks = [
+  { href: "/legal/aviso-legal", label: "Aviso legal" },
+  { href: "/legal/politica-privacidad", label: "Politica de privacidad" },
+  { href: "/legal/politica-cookies", label: "Politica de cookies" },
+];
+
+export const landingStorySections = [
+  {
+    anchorIds: ["informacion", "unete"],
+    eyebrow: "El club",
+    title: "Una manada hecha para entrenar, compartir y crecer en serio.",
+    body:
+      "Los Leones del Trail nacen para quienes quieren una comunidad activa, salidas con sentido y un entorno donde la montana se vive con compromiso, respeto y ambicion deportiva.",
+    bullets: [
+      "Comunidad real para entrenar y progresar",
+      "Salidas, rutas y objetivos compartidos",
+      "Espiritu competitivo sin perder el sentido de equipo",
+    ],
+    href: "/liga-felina/registro",
+    hrefLabel: "Hazte socio",
+    image:
+      "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?auto=format&fit=crop&w=1600&q=80",
+    imagePosition: "center center",
+    icon: "mountain",
+  },
+  {
+    anchorIds: ["inscripcion", "federarse"],
+    eyebrow: "Altas y licencias",
+    title: "Una entrada clara para darte de alta y preparar tu siguiente temporada.",
+    body:
+      "Hemos separado el acceso de socios, el contacto y el alta para que cada paso sea mas simple: registrarte, resolver dudas y preparar la parte federativa sin mezclarlo todo en la portada.",
+    bullets: [
+      "Registro de socio en una pagina especifica",
+      "Contacto publico separado para consultas",
+      "Base lista para explicar licencias y cobertura",
+    ],
+    href: "/contacto",
+    hrefLabel: "Hablar con el club",
+    image:
+      "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=80",
+    imagePosition: "center center",
+    icon: "shield",
+  },
+  {
+    anchorIds: ["liga-felina", "tablon"],
+    eyebrow: "Retos",
+    title: "Liga Felina, retos de temporada y actividad competitiva con identidad propia.",
+    body:
+      "La liga del club ya tiene su propio espacio para clasificaciones, km, desnivel y carreras validadas. La landing ahora actua como puerta de entrada clara a toda esa experiencia.",
+    bullets: [
+      "Clasificacion general y rankings especificos",
+      "Conexion con Strava para enriquecer perfiles",
+      "Carreras y objetivos pensados para enganchar a la manada",
+    ],
+    href: "/liga-felina",
+    hrefLabel: "Abrir Liga Felina",
+    image:
+      "https://images.unsplash.com/photo-1486218119243-13883505764c?auto=format&fit=crop&w=1600&q=80",
+    imagePosition: "center center",
+    icon: "trophy",
+  },
+  {
+    anchorIds: ["planes", "rutas", "sesiones"],
+    eyebrow: "Entrenamientos",
+    title: "Planes, rutas y sesiones para que cada semana tenga direccion.",
+    body:
+      "Queremos que la web no solo cuente quienes somos, sino que sirva de soporte para organizar rutas, publicar sesiones y construir una estructura deportiva mas util para el club.",
+    bullets: [
+      "Espacio listo para publicar planes de entrenamiento",
+      "Rutas destacadas con contexto y dificultad",
+      "Sesiones del club para coordinar la actividad semanal",
+    ],
+    href: "/contacto",
+    hrefLabel: "Pedir informacion",
+    image:
+      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80",
+    imagePosition: "center center",
+    icon: "route",
+  },
+] as const;
+
+export const landingSponsorCards = [
+  {
+    name: "Patrocinador principal",
+    role: "Espacio disponible",
+    body: "Reservado para una marca que quiera crecer junto al club y ganar presencia en carreras, contenidos y acciones de temporada.",
+    icon: "spark",
+  },
+  {
+    name: "Marca tecnica",
+    role: "Colaboracion abierta",
+    body: "Pensado para equipamiento, textil o material tecnico alineado con el lenguaje visual y deportivo de Los Leones del Trail.",
+    icon: "flag",
+  },
+  {
+    name: "Nutricion y recovery",
+    role: "Partner de rendimiento",
+    body: "Un bloque para colaboradores orientados a rendimiento, salud deportiva, recuperacion y apoyo al entrenamiento de la manada.",
+    icon: "heart",
+  },
+  {
+    name: "Aliado local",
+    role: "Comunidad y territorio",
+    body: "Espacio para negocios, eventos o entidades locales que quieran asociarse al club y reforzar su presencia en la zona.",
+    icon: "handshake",
+  },
+] as const;
+
 export const quickCards = [
   {
     eyebrow: "Club",
@@ -100,7 +260,7 @@ export const rulesCards = [
     body: "Se otorgan 10 puntos por cada bloque entero de 100 metros positivos acumulados.",
   },
   {
-    title: "Carreras",
+    title: "DevoraCarreras",
     body: "Cada modalidad validada suma sus puntos a la general segun distancia y desnivel de la prueba.",
   },
   {

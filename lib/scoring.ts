@@ -1,6 +1,7 @@
 import type {
   GeneralBreakdown,
   Gender,
+  LeagueGenderFilter,
   LeaderboardRow,
   Member,
   RaceClaim,
@@ -20,8 +21,18 @@ export function getRacePointsFromModality(modality: RaceModality): number {
   return getKmPoints(modality.distanceKm) + getElevationPoints(modality.elevationGain);
 }
 
-export function getMembersByGender(members: Member[], gender: Gender): Member[] {
-  return members.filter((member) => member.gender === gender && member.stravaConnected);
+export function getMembersByGender(members: Member[], gender: LeagueGenderFilter): Member[] {
+  return members.filter((member) => {
+    if (!member.stravaConnected) {
+      return false;
+    }
+
+    if (gender === "mixed") {
+      return true;
+    }
+
+    return member.gender === gender;
+  });
 }
 
 export function getTotalRacePoints(claims: RaceClaim[], memberId: string): number {
@@ -57,7 +68,7 @@ export function getGeneralBreakdown(
 export function getGeneralRanking(
   members: Member[],
   raceClaims: RaceClaim[],
-  gender: Gender,
+  gender: LeagueGenderFilter,
 ): LeaderboardRow[] {
   return getMembersByGender(members, gender)
     .map((member) => {
@@ -74,7 +85,7 @@ export function getGeneralRanking(
     .sort((left, right) => right.points - left.points);
 }
 
-export function getKmRanking(members: Member[], gender: Gender): LeaderboardRow[] {
+export function getKmRanking(members: Member[], gender: LeagueGenderFilter): LeaderboardRow[] {
   return getMembersByGender(members, gender)
     .map((member) => ({
       ...member,
@@ -85,7 +96,7 @@ export function getKmRanking(members: Member[], gender: Gender): LeaderboardRow[
     .sort((left, right) => (right.value ?? 0) - (left.value ?? 0));
 }
 
-export function getElevationRanking(members: Member[], gender: Gender): LeaderboardRow[] {
+export function getElevationRanking(members: Member[], gender: LeagueGenderFilter): LeaderboardRow[] {
   return getMembersByGender(members, gender)
     .map((member) => ({
       ...member,

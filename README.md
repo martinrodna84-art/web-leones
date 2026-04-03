@@ -14,8 +14,12 @@ Web del club y app de Liga Felina construida con Next.js, Supabase SSR y Strava.
 ## Rutas principales
 
 - `/` portada publica del club
+- `/contacto` pagina publica de contacto del club
 - `/liga-felina` clasificaciones de la liga
-- `/liga-felina/registro` registro, login y conexion con Strava
+- `/liga-felina/registro` registro de nuevos socios
+- `/liga-felina/acceso` inicio de sesion y recuperacion de contrasena
+- `/liga-felina/perfil` zona de socio y panel personal
+- `/liga-felina/perfil/editar` edicion de perfil, foto y conexion con Strava
 - `/bases` reglas de la liga
 
 ## Variables de entorno
@@ -57,7 +61,7 @@ La integracion de Strava usa:
 ## Flujo de Strava
 
 1. El socio inicia sesion en la web
-2. Pulsa "Conectar Strava"
+2. Entra en `/liga-felina/perfil` y pulsa "Conectar Strava"
 3. Strava devuelve al callback OAuth
 4. La app guarda tokens y enlaza el atleta con el socio
 5. Se sincronizan foto, perfil, km del ano y desnivel del ano

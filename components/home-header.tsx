@@ -2,14 +2,38 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
-import { SessionBadge } from "@/components/session-badge";
+import { LeagueSessionMenu } from "@/components/league-session-menu";
+import { teko } from "@/lib/fonts";
+import { isHrefActive, readWindowHash } from "@/lib/navigation";
 import type { Member } from "@/lib/types";
 
 type HomeHeaderProps = {
   member: Member | null;
+  children?: React.ReactNode;
 };
+
+function ChevronDownIcon() {
+  return (
+    <svg
+      className="nav-chevron"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M3.25 5.75L8 10.25L12.75 5.75"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="square"
+        strokeLinejoin="miter"
+      />
+    </svg>
+  );
+}
 
 const navGroups = [
   {
@@ -40,19 +64,60 @@ const navGroups = [
   },
 ];
 
-export function HomeHeader({ member }: HomeHeaderProps) {
+export function HomeHeader({ member, children }: HomeHeaderProps) {
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [sessionMenuOpen, setSessionMenuOpen] = useState(false);
+  const [currentHash, setCurrentHash] = useState("");
+
+  useEffect(() => {
+    function syncHash() {
+      setCurrentHash(readWindowHash());
+    }
+
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, [pathname]);
+
+  function closeNavigation() {
+    setMenuOpen(false);
+    setOpenGroup(null);
+    setSessionMenuOpen(false);
+  }
+
+  function handleSessionMenuChange(nextOpen: boolean) {
+    setSessionMenuOpen(nextOpen);
+
+    if (nextOpen) {
+      setOpenGroup(null);
+      setMenuOpen(false);
+    }
+  }
+
+  function handleGroupOpen(groupLabel: string) {
+    setOpenGroup(groupLabel);
+    setSessionMenuOpen(false);
+  }
+
+  function handleGroupLeave(groupLabel: string) {
+    setOpenGroup((current) => (current === groupLabel ? null : current));
+  }
 
   return (
     <header className="hero" id="inicio">
-      <nav className="main-nav">
+      <nav className={`main-nav ${teko.className}`}>
         <Link className="brand" href="/">
-          <Image src="/assets/logos/logo_2026.png" alt="Logo de Los Leones del Trail" width={78} height={78} priority />
-          <span>
-            <strong>C.D. Los Leones del Trail</strong>
-            <small>Montana, equipo y desafio</small>
-          </span>
+          <Image
+            src="/assets/logos/logo_header_clean.png"
+            alt="Logo de Los Leones del Trail"
+            width={340}
+            height={51}
+            className="brand-logo"
+            priority
+            unoptimized
+          />
         </Link>
 
         <button
@@ -60,7 +125,11 @@ export function HomeHeader({ member }: HomeHeaderProps) {
           type="button"
           aria-expanded={menuOpen}
           aria-controls="site-menu"
-          onClick={() => setMenuOpen((current) => !current)}
+          onClick={() => {
+            setMenuOpen((current) => !current);
+            setSessionMenuOpen(false);
+            setOpenGroup(null);
+          }}
         >
           Menu
         </button>
@@ -68,19 +137,41 @@ export function HomeHeader({ member }: HomeHeaderProps) {
         <div className={`nav-panel ${menuOpen ? "is-open" : ""}`} id="site-menu">
           {navGroups.map((group) => {
             const isOpen = openGroup === group.label;
+            const isGroupActive = group.links.some((link) =>
+              isHrefActive(pathname, currentHash, link.href),
+            );
             return (
-              <div key={group.label} className={`nav-item has-dropdown ${isOpen ? "open" : ""}`}>
+              <div
+                key={group.label}
+                className={`nav-item has-dropdown ${isOpen ? "open" : ""}`}
+                onMouseEnter={() => handleGroupOpen(group.label)}
+                onMouseLeave={() => handleGroupLeave(group.label)}
+              >
                 <button
-                  className="nav-link nav-button"
+                  className={`nav-link nav-button nav-link--dropdown ${isGroupActive ? "is-active" : ""}`}
                   type="button"
                   aria-expanded={isOpen}
-                  onClick={() => setOpenGroup((current) => (current === group.label ? null : group.label))}
+                  onFocus={() => handleGroupOpen(group.label)}
+                  onClick={() =>
+                    setOpenGroup((current) => {
+                      const nextOpen = current === group.label ? null : group.label;
+                      setSessionMenuOpen(false);
+                      return nextOpen;
+                    })
+                  }
                 >
-                  {group.label} <span className="nav-caret">V</span>
+                  <span className="nav-link-label">{group.label}</span>
+                  <ChevronDownIcon />
                 </button>
                 <div className="dropdown">
                   {group.links.map((link) => (
-                    <Link key={link.label} href={link.href} onClick={() => setMenuOpen(false)}>
+                    <Link
+                      key={link.label}
+                      className={isHrefActive(pathname, currentHash, link.href) ? "is-active" : ""}
+                      href={link.href}
+                      aria-current={isHrefActive(pathname, currentHash, link.href) ? "location" : undefined}
+                      onClick={closeNavigation}
+                    >
                       {link.label}
                     </Link>
                   ))}
@@ -89,17 +180,23 @@ export function HomeHeader({ member }: HomeHeaderProps) {
             );
           })}
 
-          <Link className="nav-link" href="#contacto">
+          <Link
+            className={`nav-link ${isHrefActive(pathname, currentHash, "/contacto") ? "is-active" : ""}`}
+            href="/contacto"
+            aria-current={isHrefActive(pathname, currentHash, "/contacto") ? "page" : undefined}
+            onClick={closeNavigation}
+          >
             Contacto
           </Link>
-          <SessionBadge
-            member={member}
-            href="/liga-felina/registro"
-            guestSubtitle="Accede a tu zona de socio"
-            memberSubtitle={member?.stravaConnected ? "Cuenta de la Liga Felina" : "Perfil del club"}
-          />
         </div>
+        <LeagueSessionMenu
+          member={member}
+          open={sessionMenuOpen}
+          onOpenChange={handleSessionMenuChange}
+        />
       </nav>
+
+      {children}
     </header>
   );
 }
