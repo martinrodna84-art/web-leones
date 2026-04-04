@@ -521,6 +521,15 @@ a:focus-visible {
   margin-left: auto;
 }
 
+.league-session-mobile-link {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  text-decoration: none;
+}
+
 .league-session-menu {
   position: relative;
   z-index: 36;
@@ -646,6 +655,59 @@ a:focus-visible {
 .league-session-note {
   margin: 0.2rem 0 0;
   padding: 0.35rem 0.6rem;
+  color: rgba(237, 245, 240, 0.72);
+  font-size: 0.82rem;
+}
+
+.mobile-session-panel {
+  display: none;
+}
+
+.mobile-session-kicker {
+  margin: 0;
+  color: rgba(237, 245, 240, 0.48);
+  font-family: var(--font-nav);
+  font-size: 0.88rem;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mobile-session-link,
+.mobile-session-action {
+  display: flex;
+  align-items: center;
+  min-height: 46px;
+  padding: 0.8rem 1rem;
+  border: 0;
+  background: transparent;
+  color: rgba(237, 245, 240, 0.88);
+  font-family: var(--font-nav);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  text-align: left;
+  transition: color 0.3s ease;
+}
+
+.mobile-session-action {
+  cursor: pointer;
+}
+
+.mobile-session-link:hover,
+.mobile-session-link:focus-visible,
+.mobile-session-link.is-active,
+.mobile-session-link[aria-current],
+.mobile-session-action:hover,
+.mobile-session-action:focus-visible {
+  background: transparent;
+  color: var(--lime);
+}
+
+.mobile-session-note {
+  margin: 0;
+  padding: 0.25rem 1rem 0;
   color: rgba(237, 245, 240, 0.72);
   font-size: 0.82rem;
 }
@@ -2706,6 +2768,14 @@ a:focus-visible {
     justify-content: flex-end;
   }
 
+  .league-session-menu {
+    display: none;
+  }
+
+  .league-session-mobile-link {
+    display: inline-flex;
+  }
+
   .nav-panel {
     display: flex;
     position: fixed;
@@ -2727,6 +2797,14 @@ a:focus-visible {
     pointer-events: none;
     transition: transform 220ms ease, opacity 220ms ease, visibility 220ms ease;
     z-index: 80;
+  }
+
+  .mobile-session-panel {
+    display: grid;
+    gap: 0.25rem;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .nav-panel.is-open {
@@ -2855,6 +2933,33 @@ a:focus-visible {
     background-position: center center;
   }
 
+  .league-main {
+    padding-top: 2rem;
+  }
+
+  .league-hero-layout {
+    width: min(100%, calc(100% - 2rem));
+    padding: 2rem 1rem 0;
+    gap: 1.4rem;
+  }
+
+  .league-hero-layout--landing {
+    min-height: auto;
+    padding-top: 2.8rem;
+    padding-bottom: 2.4rem;
+    align-content: start;
+  }
+
+  .league-hero-layout--with-strava {
+    padding-bottom: 2.75rem;
+  }
+
+  .league-hero-copy,
+  .league-hero-copy--landing {
+    width: 100%;
+    max-width: 100%;
+  }
+
   .league-hero-eyebrow {
     font-size: clamp(1.54rem, 7.3vw, 2.27rem);
   }
@@ -2866,7 +2971,8 @@ a:focus-visible {
   }
 
   .league-hero-title {
-    font-size: clamp(2.32rem, 9.7vw, 3.2rem);
+    font-size: clamp(1.95rem, 9vw, 2.8rem);
+    line-height: 0.9;
   }
 
   .hero-divider {
@@ -2887,14 +2993,24 @@ a:focus-visible {
     line-height: 1.28;
   }
 
+  .league-hero-title--stacked {
+    max-width: 100%;
+  }
+
+  .league-hero-title--stacked span {
+    white-space: normal;
+    text-wrap: balance;
+  }
+
   .league-strava-badge {
-    right: 1rem;
-    bottom: 1rem;
+    position: static;
     padding: 0;
+    margin-top: 0.35rem;
+    justify-self: start;
   }
 
   .league-strava-badge-image {
-    width: min(52vw, 210px);
+    width: min(62vw, 210px);
   }
 
   .hero-actions,
@@ -2944,17 +3060,165 @@ a:focus-visible {
     width: 100%;
   }
 
+  .ranking-controls {
+    gap: 0.75rem;
+  }
+
+  .ranking-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem;
+    flex: 0 0 auto;
+  }
+
   .gender-switch {
     min-width: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .tab-button {
     flex: 1 1 100%;
+    min-width: 0;
+    padding: 0.75rem 0.7rem;
+    min-height: 48px;
+    font-size: 0.96rem;
+    line-height: 1;
   }
 
-  .ranking-table th:nth-child(3),
-  .ranking-table td:nth-child(3) {
-    min-width: 180px;
+  .gender-option {
+    min-width: 0;
+    padding: 0.75rem 0.45rem;
+    min-height: 48px;
+    font-size: 0.92rem;
+    letter-spacing: 0.03em;
+  }
+
+  .panel-intro {
+    gap: 0.25rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .table-shell {
+    overflow: visible;
+    background: transparent;
+    border: 0;
+  }
+
+  .ranking-table {
+    min-width: 0;
+    table-layout: auto;
+  }
+
+  .ranking-table colgroup,
+  .ranking-table thead {
+    display: none;
+  }
+
+  .ranking-table,
+  .ranking-table tbody,
+  .ranking-table tr,
+  .ranking-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .ranking-table tbody {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .ranking-table tbody tr {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    grid-template-areas:
+      "position athlete"
+      "metric metric"
+      "points points";
+    gap: 0.75rem 0.85rem;
+    padding: 1rem;
+    border: 1px solid rgba(204, 255, 0, 0.18);
+    background: linear-gradient(180deg, #111413 0%, #1a1e1b 100%);
+  }
+
+  .ranking-table tbody tr:nth-child(even) {
+    background: linear-gradient(180deg, #111413 0%, #1a1e1b 100%);
+  }
+
+  .ranking-table td {
+    padding: 0;
+    border-bottom: 0;
+  }
+
+  .position-cell {
+    grid-area: position;
+    align-self: start;
+  }
+
+  .athlete-column {
+    grid-area: athlete;
+  }
+
+  .metric-cell,
+  .points-cell {
+    display: grid;
+    gap: 0.35rem;
+    text-align: left;
+  }
+
+  .metric-cell {
+    grid-area: metric;
+    white-space: normal;
+  }
+
+  .points-cell {
+    grid-area: points;
+  }
+
+  .metric-cell::before,
+  .points-cell::before {
+    font-family: var(--font-teko);
+    font-size: 0.92rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    text-transform: uppercase;
+    color: rgba(231, 239, 233, 0.62);
+  }
+
+  .metric-cell::before {
+    content: "Dato";
+  }
+
+  .points-cell::before {
+    content: "Puntuacion";
+  }
+
+  .athlete-cell {
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .athlete-avatar,
+  .session-avatar {
+    width: 48px;
+    height: 48px;
+  }
+
+  .athlete-copy {
+    gap: 0.2rem;
+  }
+
+  .metric-pill {
+    width: 100%;
+    justify-content: flex-start;
+    white-space: normal;
+    text-align: left;
+    line-height: 1.2;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .position-badge {
+    min-width: 60px;
   }
 
   .header-session-copy span,

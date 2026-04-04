@@ -17,6 +17,11 @@ type LeagueSessionMenuProps = {
   onOpenChange: (open: boolean) => void;
 };
 
+type MobileSessionActionsProps = {
+  member: Member | null;
+  onNavigate: () => void;
+};
+
 function GuestSessionIcon() {
   return (
     <svg
@@ -30,6 +35,86 @@ function GuestSessionIcon() {
         d="M406.5 399.6C387.4 352.9 341.5 320 288 320l-64 0c-53.5 0-99.4 32.9-118.5 79.6-35.6-37.3-57.5-87.9-57.5-143.6 0-114.9 93.1-208 208-208s208 93.1 208 208c0 55.7-21.9 106.2-57.5 143.6zm-40.1 32.7C334.4 452.4 296.6 464 256 464s-78.4-11.6-110.5-31.7c7.3-36.7 39.7-64.3 78.5-64.3l64 0c38.8 0 71.2 27.6 78.5 64.3zM256 512a256 256 0 1 0 0-512 256 256 0 1 0 0 512zm0-272a40 40 0 1 1 0-80 40 40 0 1 1 0 80zm-88-40a88 88 0 1 0 176 0 88 88 0 1 0 -176 0z"
       />
     </svg>
+  );
+}
+
+function MemberAvatar({ member }: { member: Member }) {
+  return (
+    <span className="header-session-avatar league-session-avatar">
+      <Image
+        src={resolvePhoto(member)}
+        alt="Foto de perfil"
+        width={48}
+        height={48}
+        unoptimized
+      />
+    </span>
+  );
+}
+
+export function MobileSessionActions({ member, onNavigate }: MobileSessionActionsProps) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const [isPending, startRouteTransition] = useTransition();
+  const [logoutNote, setLogoutNote] = useState("");
+
+  async function handleLogout() {
+    setLogoutNote("");
+
+    try {
+      await requestJson<{ ok: true }>("/api/app/auth/logout", {
+        method: "POST",
+      });
+
+      onNavigate();
+      startRouteTransition(() => {
+        router.push("/liga-felina/acceso");
+        router.refresh();
+      });
+    } catch (error) {
+      setLogoutNote(error instanceof Error ? error.message : "No se pudo cerrar la sesion.");
+    }
+  }
+
+  return (
+    <div className={`mobile-session-panel ${teko.className}`}>
+      <p className="mobile-session-kicker">Socio</p>
+      <Link
+        className={`mobile-session-link ${pathname === "/liga-felina" ? "is-active" : ""}`}
+        href="/liga-felina"
+        aria-current={pathname === "/liga-felina" ? "page" : undefined}
+        onClick={onNavigate}
+      >
+        Liga Felina
+      </Link>
+      <Link
+        className={`mobile-session-link ${
+          isPathActive(pathname, "/liga-felina/perfil") || isPathActive(pathname, "/liga-felina/acceso")
+            ? "is-active"
+            : ""
+        }`}
+        href={member ? "/liga-felina/perfil" : "/liga-felina/acceso"}
+        aria-current={
+          isPathActive(pathname, "/liga-felina/perfil") || isPathActive(pathname, "/liga-felina/acceso")
+            ? "page"
+            : undefined
+        }
+        onClick={onNavigate}
+      >
+        {member ? "Mi Perfil" : "Iniciar sesion"}
+      </Link>
+      {member ? (
+        <button
+          className="mobile-session-action"
+          type="button"
+          onClick={handleLogout}
+          disabled={isPending}
+        >
+          Cerrar sesion
+        </button>
+      ) : null}
+      {logoutNote ? <p className="mobile-session-note">{logoutNote}</p> : null}
+    </div>
   );
 }
 
@@ -100,6 +185,14 @@ export function LeagueSessionMenu({ member, open, onOpenChange }: LeagueSessionM
 
   return (
     <div className="league-session-shell">
+      <Link
+        className="league-session-mobile-link"
+        href={profileHref}
+        aria-label={member ? "Ir a mi perfil" : "Ir a inicio de sesion"}
+      >
+        <MemberAvatar member={member} />
+      </Link>
+
       <div
         ref={menuRef}
         className={`league-session-menu ${open ? "is-open" : ""}`}
@@ -117,19 +210,7 @@ export function LeagueSessionMenu({ member, open, onOpenChange }: LeagueSessionM
           onClick={toggleMenu}
           onFocus={openMenu}
         >
-          <span className="header-session-avatar league-session-avatar">
-            {member ? (
-              <Image
-                src={resolvePhoto(member)}
-                alt="Foto de perfil"
-                width={48}
-                height={48}
-                unoptimized
-              />
-            ) : (
-              "L"
-            )}
-          </span>
+          <MemberAvatar member={member} />
         </button>
 
         <div className={`league-session-dropdown ${teko.className}`} id={menuId} role="menu">
@@ -157,16 +238,14 @@ export function LeagueSessionMenu({ member, open, onOpenChange }: LeagueSessionM
           >
             Mi Perfil
           </Link>
-          {member ? (
-            <button
-              className="league-session-action"
-              type="button"
-              onClick={handleLogout}
-              disabled={isPending}
-            >
-              Cerrar sesion
-            </button>
-          ) : null}
+          <button
+            className="league-session-action"
+            type="button"
+            onClick={handleLogout}
+            disabled={isPending}
+          >
+            Cerrar sesion
+          </button>
           {logoutNote ? <p className="league-session-note">{logoutNote}</p> : null}
         </div>
       </div>

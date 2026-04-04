@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
-import { LeagueSessionMenu } from "@/components/league-session-menu";
+import { LeagueSessionMenu, MobileSessionActions } from "@/components/league-session-menu";
 import { teko } from "@/lib/fonts";
 import { isHrefActive } from "@/lib/navigation";
 import type { Member } from "@/lib/types";
@@ -143,6 +143,8 @@ export function LeagueHeader({
           >
             Contacto
           </Link>
+
+          <MobileSessionActions member={member} onNavigate={closeNavigation} />
         </div>
         <button
           className={`nav-backdrop ${menuOpen ? "is-open" : ""}`}
