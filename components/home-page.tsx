@@ -144,16 +144,13 @@ export function HomePage({ member }: HomePageProps) {
         <section className="hero-layout">
           <div className="hero-copy">
             <p className={`${teko.className} hero-kicker`}>Ruge con la manada y</p>
-            <h1 className="sr-only">
-              <span>HAZ DE LA</span>
-              <span>MONTAÑA TU</span>
-              <span>TERRITORIO.</span>
+            <h1 className={`${teko.className} hero-headline`}>
+              {"HAZ\u00A0DE\u00A0LA"}
+              <br />
+              {"MONTA\u00D1A\u00A0TU"}
+              <br />
+              TERRITORIO.
             </h1>
-            <p className={`${teko.className} hero-headline`} aria-hidden="true">
-              <span>HAZ DE LA</span>
-              <span>{"MONTA\u00D1A TU"}</span>
-              <span>TERRITORIO.</span>
-            </p>
             <span className="hero-divider" aria-hidden="true" />
             <p className="hero-support">
               {"En C.D. Los Leones del Trail reunimos a corredores y corredoras que quieren entrenar, compartir rutas, afrontar retos y crecer en comunidad desde el respeto por la monta\u00F1a y la pasion por el trail running."}

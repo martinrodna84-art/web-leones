@@ -209,8 +209,20 @@ export function ProfileExperience({ member }: { member: SessionMember }) {
                 <p className="strava-status">{stravaStatus}</p>
               </div>
               <div className="strava-actions">
-                <a className="button button-strava" href="/api/strava/login?returnTo=/liga-felina/perfil/editar">
-                  {member.stravaConnected ? "Reconectar Strava" : "Conectar Strava"}
+                <a
+                  className="strava-connect-official"
+                  href="/api/strava/login?returnTo=/liga-felina/perfil/editar"
+                  aria-label={member.stravaConnected ? "Reconectar con Strava" : "Conectar con Strava"}
+                  title={member.stravaConnected ? "Reconectar con Strava" : "Conectar con Strava"}
+                >
+                  <Image
+                    src="/assets/strava/btn_strava_connect_with_orange.svg"
+                    alt="Connect with Strava"
+                    width={237}
+                    height={48}
+                    className="strava-connect-official-image"
+                    unoptimized
+                  />
                 </a>
                 <button className="button ghost-button" type="button" onClick={handleSyncStrava}>
                   Actualizar Strava

@@ -16,6 +16,7 @@ export function LeaguePage({ snapshot }: { snapshot: LeagueSnapshot }) {
         lead="Registro de socios, acceso personal y tablas de clasificacion por puntos, kilometros y desnivel. La pagina queda preparada para conectar cada perfil con Strava y alimentar la liga de forma mas automatica."
         hideSidecard
         landingAligned
+        poweredByStrava
       />
       <LeagueExperience snapshot={snapshot} />
       <SiteFooter />

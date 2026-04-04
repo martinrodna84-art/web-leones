@@ -35,6 +35,22 @@ function ChevronDownIcon() {
   );
 }
 
+function BurgerMenuIcon() {
+  return (
+    <svg
+      className="menu-toggle-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+      <path d="M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+      <path d="M4 17H20" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+    </svg>
+  );
+}
+
 const navGroups = [
   {
     label: "El Club",
@@ -125,13 +141,15 @@ export function HomeHeader({ member, children }: HomeHeaderProps) {
           type="button"
           aria-expanded={menuOpen}
           aria-controls="site-menu"
+          aria-label="Abrir menu"
           onClick={() => {
             setMenuOpen((current) => !current);
             setSessionMenuOpen(false);
             setOpenGroup(null);
           }}
         >
-          Menu
+          <BurgerMenuIcon />
+          <span className="sr-only">Menu</span>
         </button>
 
         <div className={`nav-panel ${menuOpen ? "is-open" : ""}`} id="site-menu">
@@ -189,6 +207,13 @@ export function HomeHeader({ member, children }: HomeHeaderProps) {
             Contacto
           </Link>
         </div>
+        <button
+          className={`nav-backdrop ${menuOpen ? "is-open" : ""}`}
+          type="button"
+          aria-label="Cerrar menu"
+          tabIndex={menuOpen ? 0 : -1}
+          onClick={closeNavigation}
+        />
         <LeagueSessionMenu
           member={member}
           open={sessionMenuOpen}

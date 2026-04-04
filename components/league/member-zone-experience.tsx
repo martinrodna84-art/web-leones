@@ -128,11 +128,7 @@ export function MemberZoneExperience({ member }: { member: SessionMember }) {
                 <button className="button ghost-button" type="button" onClick={handleSyncStrava} disabled={isPending}>
                   Actualizar Strava
                 </button>
-              ) : (
-                <a className="button button-strava" href="/api/strava/login?returnTo=/liga-felina/perfil">
-                  Conectar Strava
-                </a>
-              )}
+              ) : null}
             </div>
 
             {syncNote ? <p className="form-note">{syncNote}</p> : null}

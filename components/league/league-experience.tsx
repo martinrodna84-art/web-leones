@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-import { getDisplayName, resolvePhoto } from "@/lib/members";
+import { getDisplayName, getMemberInitials, hasCustomPhoto, resolvePhoto } from "@/lib/members";
 import {
   formatDate,
   formatInteger,
@@ -652,6 +652,7 @@ function LeaderboardTable({
           {rows.map((row, index) => {
             const open = isGeneral && expandedRows.includes(row.id);
             const breakdown = isGeneral ? getGeneralBreakdown(row, raceEvents, raceClaims) : null;
+            const showPhoto = hasCustomPhoto(row);
 
             return (
               <tr key={row.id}>
@@ -663,8 +664,12 @@ function LeaderboardTable({
                 </td>
                 <td className="athlete-column">
                   <div className="athlete-cell">
-                    <div className="athlete-avatar">
-                      <Image src={resolvePhoto(row)} alt={`Foto de ${getDisplayName(row)}`} width={56} height={56} unoptimized />
+                    <div className={`athlete-avatar ${showPhoto ? "" : "athlete-avatar--initials"}`}>
+                      {showPhoto ? (
+                        <Image src={resolvePhoto(row)} alt={`Foto de ${getDisplayName(row)}`} width={56} height={56} unoptimized />
+                      ) : (
+                        <span>{getMemberInitials(row)}</span>
+                      )}
                     </div>
                     <div className="athlete-copy">
                       <strong>{getDisplayName(row)}</strong>

@@ -19,7 +19,46 @@ type LeagueHeaderProps = {
   hideSidecard?: boolean;
   landingAligned?: boolean;
   titleLines?: string[];
+  poweredByStrava?: boolean;
 };
+
+function PoweredByStravaBadge() {
+  return (
+    <a
+      className="league-strava-badge"
+      href="https://www.strava.com"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Powered by Strava"
+      title="Powered by Strava"
+    >
+      <Image
+        src="/assets/strava/api_logo_pwrdBy_strava_horiz_orange.svg"
+        alt="Powered by Strava"
+        width={365}
+        height={37}
+        className="league-strava-badge-image"
+        unoptimized
+      />
+    </a>
+  );
+}
+
+function BurgerMenuIcon() {
+  return (
+    <svg
+      className="menu-toggle-icon"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path d="M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+      <path d="M4 12H20" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+      <path d="M4 17H20" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+    </svg>
+  );
+}
 
 export function LeagueHeader({
   member,
@@ -30,6 +69,7 @@ export function LeagueHeader({
   hideSidecard = false,
   landingAligned = false,
   titleLines,
+  poweredByStrava = false,
 }: LeagueHeaderProps) {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -60,12 +100,14 @@ export function LeagueHeader({
           type="button"
           aria-expanded={menuOpen}
           aria-controls="league-menu"
+          aria-label="Abrir menu"
           onClick={() => {
             setMenuOpen((current) => !current);
             setSessionMenuOpen(false);
           }}
         >
-          Menu
+          <BurgerMenuIcon />
+          <span className="sr-only">Menu</span>
         </button>
 
         <div className={`nav-panel ${menuOpen ? "is-open" : ""}`} id="league-menu">
@@ -102,6 +144,13 @@ export function LeagueHeader({
             Contacto
           </Link>
         </div>
+        <button
+          className={`nav-backdrop ${menuOpen ? "is-open" : ""}`}
+          type="button"
+          aria-label="Cerrar menu"
+          tabIndex={menuOpen ? 0 : -1}
+          onClick={closeNavigation}
+        />
 
         <LeagueSessionMenu
           member={member}
@@ -118,7 +167,7 @@ export function LeagueHeader({
       <section
         className={`league-hero-layout ${compact ? "compact-layout" : ""} ${
           landingAligned ? "league-hero-layout--landing" : ""
-        }`}
+        } ${poweredByStrava ? "league-hero-layout--with-strava" : ""}`}
       >
         <div className={`hero-copy league-hero-copy ${landingAligned ? "league-hero-copy--landing" : ""}`}>
           <p className="eyebrow league-hero-eyebrow">{subtitle}</p>
@@ -142,6 +191,7 @@ export function LeagueHeader({
             </ul>
           </aside>
         ) : null}
+        {poweredByStrava ? <PoweredByStravaBadge /> : null}
       </section>
     </header>
   );
