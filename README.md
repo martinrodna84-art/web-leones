@@ -34,6 +34,7 @@ STRAVA_CLIENT_ID=
 STRAVA_CLIENT_SECRET=
 STRAVA_REDIRECT_URI=http://localhost:3000/api/strava/callback
 STRAVA_WEBHOOK_VERIFY_TOKEN=
+STRAVA_WEBHOOK_CALLBACK_URL=
 ```
 
 ## Setup de Strava
@@ -43,6 +44,7 @@ STRAVA_WEBHOOK_VERIFY_TOKEN=
 3. Usa como callback local `http://localhost:3000/api/strava/callback`
 4. Copia `Client ID` y `Client Secret` a `.env.local`
 5. Elige un valor largo para `STRAVA_WEBHOOK_VERIFY_TOKEN`
+6. Configura `STRAVA_WEBHOOK_CALLBACK_URL` con la URL publica HTTPS de `/api/strava/webhook`
 
 Scopes usados por la integracion:
 
@@ -64,8 +66,9 @@ La integracion de Strava usa:
 2. Entra en `/liga-felina/perfil` y pulsa "Conectar Strava"
 3. Strava devuelve al callback OAuth
 4. La app guarda tokens y enlaza el atleta con el socio
-5. Se sincronizan foto, perfil, km del ano y desnivel del ano
-6. La Liga Felina usa esos datos persistidos para las clasificaciones
+5. Se sincronizan foto, perfil, km/desnivel anuales y metricas mensuales/semanales
+6. Los webhooks de Strava refrescan esos datos cuando entra una nueva actividad
+7. La Liga Felina usa esos datos persistidos para las clasificaciones
 
 ## Webhooks
 
@@ -76,8 +79,10 @@ Rutas implementadas:
 
 Para activarlos necesitas registrar la suscripcion webhook en Strava con una URL publica HTTPS y el mismo `STRAVA_WEBHOOK_VERIFY_TOKEN`.
 
+La ruta interna `POST /api/app/strava/webhook` deja preparada la suscripcion desde el servidor para cuentas administradoras.
+
 ## Notas
 
 - Los eventos y validaciones de carreras siguen siendo in-memory en `lib/store.ts`
-- La clasificacion de km y desnivel ya puede alimentarse desde Strava
+- La clasificacion usa una sola tabla con vistas anual, mensual y semanal
 - Antes de publicar la liga con datos reales, revisa el acuerdo de la API de Strava

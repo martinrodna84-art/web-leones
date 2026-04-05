@@ -27,8 +27,9 @@
 ### Domain Model
 - `member_profiles` is the core persisted table.
 - League ranking is computed from:
-  - yearly km
-  - yearly elevation gain
+  - yearly km / elevation
+  - monthly km / elevation
+  - weekly km / elevation
   - validated race claims
 - Only members with `stravaConnected = true` appear in rankings.
 - Race points formula:
@@ -59,6 +60,9 @@
 - Real OAuth flow exists under `app/api/strava/*`.
 - Fallback/mock Strava mode exists for local/demo flows.
 - Stored Strava access tokens now persist in Supabase via `strava_connections`.
+- Weekly and monthly stats are now persisted in `member_profiles`.
+- `POST /api/strava/webhook` triggers a forced sync on Strava activity events.
+- `POST /api/app/strava/webhook` lets an admin ensure the Strava push subscription from the server.
 
 ### API Surface
 - Member/auth:
@@ -85,7 +89,7 @@
 - The new auth split leaves some legacy client components in `components/league/*` unused; the active ones are `register-signup-experience.tsx`, `member-access-experience.tsx`, and `profile-experience.tsx`.
 - Several UI strings show mojibake characters, suggesting encoding issues in source text.
 - Many user-facing forms are functional, but the public contact form is only presentational.
-- Webhook registration in the Strava app still requires manual setup with a public HTTPS callback URL.
+- The public Vercel webhook callback is currently rejecting the local verify token with `403`, so final Strava subscription registration is blocked until both environments use the same token.
 
 ### Environment Limitations During Analysis
 - `rg`, `git`, `node`, and `npm` were not available in PATH in this session.

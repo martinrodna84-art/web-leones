@@ -1,5 +1,6 @@
 export type Gender = "men" | "women";
 export type LeagueGenderFilter = "men" | "mixed" | "women";
+export type LeagueStatsPeriod = "year" | "month" | "week";
 
 export type PhotoSource = "upload" | "strava";
 
@@ -19,6 +20,10 @@ export interface StravaProfile {
   profileMedium: string;
   ytdKm: number;
   ytdElevation: number;
+  monthKm: number;
+  monthElevation: number;
+  weekKm: number;
+  weekElevation: number;
 }
 
 export interface Member {
@@ -36,6 +41,10 @@ export interface Member {
   stravaAthleteId: number | null;
   yearKm: number;
   yearElevation: number;
+  monthKm: number;
+  monthElevation: number;
+  weekKm: number;
+  weekElevation: number;
   isAdmin: boolean;
   stravaLastSyncAt: string | null;
 }
@@ -94,15 +103,15 @@ export interface RaceBreakdownItem {
 }
 
 export interface GeneralBreakdown {
-  kmPoints: number;
-  elevationPoints: number;
+  devoraKmPoints: number;
+  devoraElevationPoints: number;
+  racePoints: number;
   races: RaceBreakdownItem[];
 }
 
 export interface LeaderboardRow extends Member {
   metricLabel: string;
   points: number;
-  value?: number;
 }
 
 export interface LeagueSnapshot {

@@ -1,15 +1,15 @@
-import type {
-  Member,
-  RaceModality,
-  StravaActivity,
-  StravaProfile,
-  StravaTokenExchange,
-} from "@/lib/types";
+import type { LeagueStatsPeriod, Member, RaceModality, StravaActivity, StravaProfile, StravaTokenExchange } from "@/lib/types";
 
+import { getCurrentLeaguePeriodBoundaries } from "@/lib/league-periods";
 import { MOCK_STRAVA_PROFILE } from "@/lib/mock-data";
 import { getStravaEnv } from "@/lib/supabase/env";
 
 const RUN_SPORTS = new Set(["Run", "TrailRun"]);
+
+type RecentStravaStats = Pick<
+  StravaProfile,
+  "monthKm" | "monthElevation" | "weekKm" | "weekElevation"
+>;
 
 function ensureStravaConfig() {
   const config = getStravaEnv();
@@ -71,6 +71,10 @@ export function toStravaProfile(member: Member): StravaProfile | null {
     profileMedium: member.stravaPhoto,
     ytdKm: member.yearKm,
     ytdElevation: member.yearElevation,
+    monthKm: member.monthKm,
+    monthElevation: member.monthElevation,
+    weekKm: member.weekKm,
+    weekElevation: member.weekElevation,
   };
 }
 
@@ -171,19 +175,40 @@ export async function fetchStravaAthlete(accessToken: string): Promise<StravaPro
     ),
     ytdKm: 0,
     ytdElevation: 0,
+    monthKm: 0,
+    monthElevation: 0,
+    weekKm: 0,
+    weekElevation: 0,
   };
+}
+
+function accumulateStats(
+  stats: RecentStravaStats,
+  activity: Record<string, unknown>,
+  period: LeagueStatsPeriod,
+) {
+  const distanceKm = Number(activity.distance ?? 0) / 1000;
+  const elevationGain = Number(activity.total_elevation_gain ?? 0);
+
+  if (period === "month") {
+    stats.monthKm += distanceKm;
+    stats.monthElevation += elevationGain;
+    return;
+  }
+
+  stats.weekKm += distanceKm;
+  stats.weekElevation += elevationGain;
 }
 
 export async function fetchYtdStats(accessToken: string): Promise<Pick<StravaProfile, "ytdKm" | "ytdElevation">> {
   let distance = 0;
   let elevation = 0;
   let page = 1;
-  const current = new Date();
-  const yearStart = new Date(Date.UTC(current.getUTCFullYear(), 0, 1, 0, 0, 0));
+  const boundaries = getCurrentLeaguePeriodBoundaries();
 
   while (true) {
     const params = new URLSearchParams({
-      after: String(Math.floor(yearStart.getTime() / 1000)),
+      after: String(Math.floor(boundaries.yearStartMs / 1000)),
       page: String(page),
       per_page: "200",
     });
@@ -207,10 +232,12 @@ export async function fetchYtdStats(accessToken: string): Promise<Pick<StravaPro
 
     for (const activity of activities) {
       const sportType = String(activity.sport_type ?? activity.type ?? "");
-      if (RUN_SPORTS.has(sportType)) {
-        distance += Number(activity.distance ?? 0);
-        elevation += Number(activity.total_elevation_gain ?? 0);
+      if (!RUN_SPORTS.has(sportType)) {
+        continue;
       }
+
+      distance += Number(activity.distance ?? 0);
+      elevation += Number(activity.total_elevation_gain ?? 0);
     }
 
     if (activities.length < 200) {
@@ -223,6 +250,60 @@ export async function fetchYtdStats(accessToken: string): Promise<Pick<StravaPro
   return {
     ytdKm: Math.round((distance / 1000) * 10) / 10,
     ytdElevation: Math.round(elevation),
+  };
+}
+
+export async function fetchRecentPeriodStats(accessToken: string): Promise<RecentStravaStats> {
+  const boundaries = getCurrentLeaguePeriodBoundaries();
+  const params = new URLSearchParams({
+    after: String(Math.floor(boundaries.monthStartMs / 1000)),
+    per_page: "200",
+    page: "1",
+  });
+
+  // Pragmatic mode: one monthly fetch and local filtering for week/month to save API quota.
+  const response = await fetch(`https://www.strava.com/api/v3/athlete/activities?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("No se pudo calcular la actividad reciente en Strava.");
+  }
+
+  const activities = (await response.json()) as Array<Record<string, unknown>>;
+  const stats: RecentStravaStats = {
+    monthKm: 0,
+    monthElevation: 0,
+    weekKm: 0,
+    weekElevation: 0,
+  };
+
+  for (const activity of activities) {
+    const sportType = String(activity.sport_type ?? activity.type ?? "");
+    if (!RUN_SPORTS.has(sportType)) {
+      continue;
+    }
+
+    const startedAtMs = Date.parse(String(activity.start_date ?? ""));
+    if (!Number.isFinite(startedAtMs)) {
+      continue;
+    }
+
+    accumulateStats(stats, activity, "month");
+
+    if (startedAtMs >= boundaries.weekStartMs) {
+      accumulateStats(stats, activity, "week");
+    }
+  }
+
+  return {
+    monthKm: Math.round(stats.monthKm * 10) / 10,
+    monthElevation: Math.round(stats.monthElevation),
+    weekKm: Math.round(stats.weekKm * 10) / 10,
+    weekElevation: Math.round(stats.weekElevation),
   };
 }
 

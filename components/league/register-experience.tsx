@@ -96,7 +96,7 @@ export function RegisterExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
       : draftStravaProfile
         ? "Modo de prueba activado con conexion simulada para el registro."
         : activeMember
-          ? "Conecta Strava para importar foto, perfil y metricas del ano en curso."
+          ? "Conecta Strava para importar foto, perfil y metricas anuales, mensuales y semanales."
           : "Crea tu perfil o usa la simulacion para precargar foto y metricas.");
 
   function refreshPage() {

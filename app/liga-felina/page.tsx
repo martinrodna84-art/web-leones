@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Liga Felina | Los Leones del Trail",
   description:
-    "Liga Felina de Los Leones del Trail. Ranking general, DevoraKm, Devora+ y DevoraCarreras con validacion Strava.",
+    "Liga Felina de Los Leones del Trail. Clasificacion anual, mensual y semanal con DevoraCarreras y sincronizacion Strava.",
 };
 
 export default async function Page() {

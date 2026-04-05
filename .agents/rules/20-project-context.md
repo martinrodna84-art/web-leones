@@ -31,7 +31,7 @@
 
 ## Domain Notes
 
-- League ranking depends on yearly km, yearly elevation gain, and validated race claims.
+- League ranking depends on persisted yearly, monthly, and weekly Strava metrics plus validated race claims.
 - Only members with `stravaConnected = true` should appear in rankings.
 - Race points formula: `floor(km) + floor(elevation / 100) * 10`.
 
@@ -39,6 +39,8 @@
 
 - Required environment keys are defined in `.env.local`.
 - Real Strava OAuth routes live under `app/api/strava/*`.
+- Strava webhook verification and delivery live under `app/api/strava/webhook/route.ts`.
+- Admin webhook management lives under `app/api/app/strava/webhook/route.ts`.
 - Preserve the current Supabase SSR patterns unless the task explicitly requires a migration.
 - Be careful with changes around race events, claims, and Strava state because parts of that flow are still in-memory.
 - Watch for existing text-encoding issues in user-facing copy when editing content.

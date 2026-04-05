@@ -1575,6 +1575,19 @@ a:focus-visible {
   flex: 0 0 auto;
 }
 
+.period-switch {
+  display: inline-grid;
+  grid-template-columns: repeat(3, minmax(108px, 1fr));
+  gap: 0;
+  padding: 0;
+  background: #101311;
+  border: 1px solid rgba(204, 255, 0, 0.18);
+  border-radius: 0;
+  width: auto;
+  min-width: 336px;
+  flex: 0 0 auto;
+}
+
 .gender-option {
   border: 1px solid transparent;
   border-radius: 0;
@@ -1592,9 +1605,34 @@ a:focus-visible {
   transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
 }
 
+.period-option {
+  border: 1px solid transparent;
+  border-radius: 0;
+  background: transparent;
+  padding: 0.85rem 1rem;
+  margin: 0;
+  min-height: 50px;
+  cursor: pointer;
+  font-family: var(--font-teko);
+  font-size: 1.04rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(231, 239, 233, 0.66);
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
+}
+
+.period-option:hover,
+.period-option:focus-visible,
 .gender-option:hover,
 .gender-option:focus-visible {
   background: rgba(255, 255, 255, 0.04);
+}
+
+.period-option.is-active {
+  background: var(--lime);
+  color: var(--coal);
+  border-color: var(--lime);
 }
 
 .gender-option.is-active {
@@ -3056,6 +3094,7 @@ a:focus-visible {
 
   .ranking-controls,
   .ranking-tabs,
+  .period-switch,
   .gender-switch {
     width: 100%;
   }
@@ -3076,6 +3115,11 @@ a:focus-visible {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .period-switch {
+    min-width: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
   .tab-button {
     flex: 1 1 100%;
     min-width: 0;
@@ -3085,11 +3129,12 @@ a:focus-visible {
     line-height: 1;
   }
 
+  .period-option,
   .gender-option {
     min-width: 0;
-    padding: 0.75rem 0.45rem;
+    padding: 0.75rem 0.6rem;
     min-height: 48px;
-    font-size: 0.92rem;
+    font-size: 0.94rem;
     letter-spacing: 0.03em;
   }
 

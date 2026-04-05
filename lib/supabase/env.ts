@@ -32,5 +32,6 @@ export function getStravaEnv() {
     clientSecret: readOptionalEnv("STRAVA_CLIENT_SECRET"),
     redirectUri: readOptionalEnv("STRAVA_REDIRECT_URI"),
     webhookVerifyToken: readOptionalEnv("STRAVA_WEBHOOK_VERIFY_TOKEN"),
+    webhookCallbackUrl: readOptionalEnv("STRAVA_WEBHOOK_CALLBACK_URL"),
   };
 }

@@ -186,10 +186,10 @@ export function LeagueHeader({
             <p className="card-kicker">Liga 2026</p>
             <h2>Ranking vivo del club</h2>
             <ul>
-              <li>Clasificacion general por puntos totales</li>
-              <li>DevoraKm para el volumen anual</li>
-              <li>Devora+ para el desnivel positivo</li>
-              <li>DevoraCarreras con flujo de validacion listo para Strava</li>
+              <li>Clasificacion unica con vistas anual, mensual y semanal</li>
+              <li>Desglose de DevoraKm, Devora+ y DevoraCarreras</li>
+              <li>Actualizacion automatica desde Strava via webhook</li>
+              <li>Validacion de carreras lista para sumar puntos reales</li>
             </ul>
           </aside>
         ) : null}

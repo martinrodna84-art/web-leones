@@ -37,6 +37,10 @@ export const MOCK_STRAVA_PROFILE: StravaProfile = {
   profileMedium: MOCK_STRAVA_AVATAR,
   ytdKm: 742.6,
   ytdElevation: 13240,
+  monthKm: 128.4,
+  monthElevation: 2140,
+  weekKm: 34.7,
+  weekElevation: 620,
 };
 
 function createSeedMember({
@@ -49,6 +53,10 @@ function createSeedMember({
   athleteId,
   yearKm,
   yearElevation,
+  monthKm,
+  monthElevation,
+  weekKm,
+  weekElevation,
   photoSource = "strava",
 }: {
   id: string;
@@ -60,6 +68,10 @@ function createSeedMember({
   athleteId: number;
   yearKm: number;
   yearElevation: number;
+  monthKm: number;
+  monthElevation: number;
+  weekKm: number;
+  weekElevation: number;
   photoSource?: Member["photoSource"];
 }): Member {
   return {
@@ -77,6 +89,10 @@ function createSeedMember({
     stravaAthleteId: athleteId,
     yearKm,
     yearElevation,
+    monthKm,
+    monthElevation,
+    weekKm,
+    weekElevation,
     isAdmin: false,
     stravaLastSyncAt: "2026-04-03T09:30:00.000Z",
   };
@@ -93,6 +109,10 @@ export const seedMembers: Member[] = [
     athleteId: 3101,
     yearKm: 1428.6,
     yearElevation: 23640,
+    monthKm: 166.8,
+    monthElevation: 2840,
+    weekKm: 42.5,
+    weekElevation: 760,
   }),
   createSeedMember({
     id: "seed-2",
@@ -104,6 +124,10 @@ export const seedMembers: Member[] = [
     athleteId: 3102,
     yearKm: 1312.4,
     yearElevation: 22180,
+    monthKm: 154.2,
+    monthElevation: 2510,
+    weekKm: 38.9,
+    weekElevation: 640,
     photoSource: "upload",
   }),
   createSeedMember({
@@ -116,6 +140,10 @@ export const seedMembers: Member[] = [
     athleteId: 3103,
     yearKm: 1184.3,
     yearElevation: 19520,
+    monthKm: 149.7,
+    monthElevation: 2330,
+    weekKm: 31.4,
+    weekElevation: 510,
   }),
   createSeedMember({
     id: "seed-4",
@@ -127,6 +155,10 @@ export const seedMembers: Member[] = [
     athleteId: 3104,
     yearKm: 1066.7,
     yearElevation: 17740,
+    monthKm: 121.5,
+    monthElevation: 1920,
+    weekKm: 27.8,
+    weekElevation: 430,
     photoSource: "upload",
   }),
   createSeedMember({
@@ -139,6 +171,10 @@ export const seedMembers: Member[] = [
     athleteId: 3105,
     yearKm: 954.1,
     yearElevation: 14980,
+    monthKm: 111.2,
+    monthElevation: 1680,
+    weekKm: 24.6,
+    weekElevation: 390,
   }),
   createSeedMember({
     id: "seed-6",
@@ -150,6 +186,10 @@ export const seedMembers: Member[] = [
     athleteId: 3201,
     yearKm: 1388.2,
     yearElevation: 22890,
+    monthKm: 162.1,
+    monthElevation: 2710,
+    weekKm: 40.2,
+    weekElevation: 700,
   }),
   createSeedMember({
     id: "seed-7",
@@ -161,6 +201,10 @@ export const seedMembers: Member[] = [
     athleteId: 3202,
     yearKm: 1241.5,
     yearElevation: 21060,
+    monthKm: 146.6,
+    monthElevation: 2460,
+    weekKm: 35.7,
+    weekElevation: 620,
     photoSource: "upload",
   }),
   createSeedMember({
@@ -173,6 +217,10 @@ export const seedMembers: Member[] = [
     athleteId: 3203,
     yearKm: 1123.8,
     yearElevation: 18320,
+    monthKm: 133.5,
+    monthElevation: 2190,
+    weekKm: 29.8,
+    weekElevation: 470,
   }),
   createSeedMember({
     id: "seed-9",
@@ -184,6 +232,10 @@ export const seedMembers: Member[] = [
     athleteId: 3204,
     yearKm: 1008.9,
     yearElevation: 16610,
+    monthKm: 118.9,
+    monthElevation: 1950,
+    weekKm: 26.4,
+    weekElevation: 410,
     photoSource: "upload",
   }),
   createSeedMember({
@@ -196,6 +248,10 @@ export const seedMembers: Member[] = [
     athleteId: 3205,
     yearKm: 918.4,
     yearElevation: 14270,
+    monthKm: 103.8,
+    monthElevation: 1640,
+    weekKm: 22.9,
+    weekElevation: 360,
   }),
 ];
 

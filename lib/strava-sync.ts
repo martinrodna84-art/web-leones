@@ -13,6 +13,7 @@ import {
   exchangeStravaToken,
   fetchStravaActivityById,
   fetchStravaAthlete,
+  fetchRecentPeriodStats,
   fetchYtdStats,
   parseStravaScopes,
   refreshStravaToken,
@@ -92,6 +93,10 @@ async function updateMemberProfileFromStrava(
     photo_source: resolvePhotoSource(currentMember),
     year_km: profile.ytdKm,
     year_elevation: profile.ytdElevation,
+    month_km: profile.monthKm,
+    month_elevation: profile.monthElevation,
+    week_km: profile.weekKm,
+    week_elevation: profile.weekElevation,
     strava_last_sync_at: syncedAt,
   };
 
@@ -114,6 +119,10 @@ async function clearMemberStravaProfile(memberId: string): Promise<void> {
     photo_source: "upload",
     year_km: 0,
     year_elevation: 0,
+    month_km: 0,
+    month_elevation: 0,
+    week_km: 0,
+    week_elevation: 0,
     strava_last_sync_at: null,
   };
 
@@ -128,15 +137,20 @@ async function clearMemberStravaProfile(memberId: string): Promise<void> {
 }
 
 async function buildCurrentStravaProfile(accessToken: string): Promise<StravaProfile> {
-  const [athlete, stats] = await Promise.all([
+  const [athlete, yearStats, recentStats] = await Promise.all([
     fetchStravaAthlete(accessToken),
     fetchYtdStats(accessToken),
+    fetchRecentPeriodStats(accessToken),
   ]);
 
   return {
     ...athlete,
-    ytdKm: stats.ytdKm,
-    ytdElevation: stats.ytdElevation,
+    ytdKm: yearStats.ytdKm,
+    ytdElevation: yearStats.ytdElevation,
+    monthKm: recentStats.monthKm,
+    monthElevation: recentStats.monthElevation,
+    weekKm: recentStats.weekKm,
+    weekElevation: recentStats.weekElevation,
   };
 }
 
@@ -414,6 +428,10 @@ export async function handleStravaWebhookEvent(
   }
 
   if (connection.status !== "active") {
+    return;
+  }
+
+  if (event.object_type === "activity" && !["create", "update", "delete"].includes(event.aspect_type)) {
     return;
   }
 

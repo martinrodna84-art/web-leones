@@ -39,7 +39,7 @@ export function ProfileExperience({ member }: { member: SessionMember }) {
     searchParams.get("strava_message") ||
     (member.stravaConnected
       ? `Conectado con Strava como ${getDisplayName(member)}. Ultima sincronizacion: ${formatLastSync(member.stravaLastSyncAt)}.`
-      : "Conecta Strava para importar foto, perfil y metricas del ano en curso.");
+      : "Conecta Strava para importar foto, perfil y metricas anuales, mensuales y semanales.");
 
   function refreshPage() {
     startRouteTransition(() => {
@@ -203,7 +203,7 @@ export function ProfileExperience({ member }: { member: SessionMember }) {
               <div>
                 <strong>Conexion con Strava</strong>
                 <p>
-                  Enlaza tu cuenta para traer foto, perfil y metricas del ano en curso.
+                  Enlaza tu cuenta para traer foto, perfil y metricas anuales, mensuales y semanales.
                   La Liga Felina se alimenta desde aqui.
                 </p>
                 <p className="strava-status">{stravaStatus}</p>

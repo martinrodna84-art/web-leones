@@ -250,19 +250,23 @@ export const trainingCards = [
 export const rulesCards = [
   {
     title: "Clasificacion general",
-    body: "Suma todos los puntos obtenidos por kilometros, desnivel positivo y carreras validadas.",
+    body: "La clasificacion principal cambia entre vista anual, mensual y semanal sin separar la liga en varias tablas.",
+  },
+  {
+    title: "Periodos",
+    body: "El selector superior alterna entre el acumulado del ano, el mes en curso y la semana actual.",
   },
   {
     title: "DevoraKm",
-    body: "Se otorga 1 punto por cada kilometro entero acumulado en el ano en curso.",
+    body: "Se otorga 1 punto por cada kilometro entero acumulado dentro del periodo activo.",
   },
   {
     title: "Devora+",
-    body: "Se otorgan 10 puntos por cada bloque entero de 100 metros positivos acumulados.",
+    body: "Se otorgan 10 puntos por cada bloque entero de 100 metros positivos dentro del periodo activo.",
   },
   {
     title: "DevoraCarreras",
-    body: "Cada modalidad validada suma sus puntos a la general segun distancia y desnivel de la prueba.",
+    body: "Cada modalidad validada suma sus puntos al periodo al que pertenece la carrera segun su fecha oficial.",
   },
   {
     title: "Categorias",

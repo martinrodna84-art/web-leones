@@ -11,9 +11,9 @@ export function LeaguePage({ snapshot }: { snapshot: LeagueSnapshot }) {
       <LeagueHeader
         member={snapshot.activeMember}
         subtitle="Liga Felina 2026"
-        title="LA CLASIFICACIÓN DONDE CADA SALIDA DEJA HUELLA."
-        titleLines={["LA CLASIFICACIÓN", "DONDE CADA SALIDA", "DEJA HUELLA."]}
-        lead="Registro de socios, acceso personal y tablas de clasificacion por puntos, kilometros y desnivel. La pagina queda preparada para conectar cada perfil con Strava y alimentar la liga de forma mas automatica."
+        title="LA CLASIFICACION DONDE CADA SALIDA DEJA HUELLA."
+        titleLines={["LA CLASIFICACION", "DONDE CADA SALIDA", "DEJA HUELLA."]}
+        lead="Clasificacion anual, mensual y semanal en una sola tabla, alimentada desde Strava y enriquecida con DevoraCarreras."
         hideSidecard
         landingAligned
         poweredByStrava

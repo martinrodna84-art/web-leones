@@ -26,8 +26,8 @@ export function BasesPage({ member }: BasesPageProps) {
             <p className="eyebrow dark">Sistema</p>
             <h2>Puntuacion y validacion</h2>
             <p>
-              La Liga Felina combina el volumen anual de entrenamiento con la participacion
-              en carreras verificadas mediante Strava y con una base ya preparada para un backend real.
+              La Liga Felina combina la vista anual, mensual y semanal del entrenamiento
+              con la participacion en carreras verificadas mediante Strava.
             </p>
           </div>
 

@@ -10,16 +10,14 @@ import {
   formatInteger,
   formatNumber,
   getClaimedEventIds,
-  getElevationRanking,
   getGeneralBreakdown,
   getGeneralRanking,
-  getKmRanking,
   getRacePointsFromModality,
   getRankIcon,
 } from "@/lib/scoring";
-import type { LeagueGenderFilter, LeagueSnapshot, RaceEvent, RaceModality } from "@/lib/types";
+import type { LeagueGenderFilter, LeagueSnapshot, LeagueStatsPeriod, RaceEvent, RaceModality } from "@/lib/types";
 
-type RankingTab = "general" | "km" | "elevation" | "races";
+type RankingTab = "ranking" | "races";
 
 type EventFormState = {
   id?: string;
@@ -82,7 +80,8 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
   const router = useRouter();
   const [isPending, startRouteRefresh] = useTransition();
   const [currentGender, setCurrentGender] = useState<LeagueGenderFilter>("mixed");
-  const [currentTab, setCurrentTab] = useState<RankingTab>("general");
+  const [currentTab, setCurrentTab] = useState<RankingTab>("ranking");
+  const [currentPeriod, setCurrentPeriod] = useState<LeagueStatsPeriod>("year");
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [eventForm, setEventForm] = useState<EventFormState | null>(null);
   const [eventNote, setEventNote] = useState("");
@@ -102,11 +101,15 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
     events.find((eventItem) => eventItem.id === effectiveSelectedEventId) ?? events[0] ?? null;
   const claimedEventIds = activeMember ? getClaimedEventIds(snapshot.raceClaims, activeMember.id) : new Set<string>();
   const canManageRaceEvents = Boolean(activeMember);
-  const rankings = {
-    general: getGeneralRanking(snapshot.members, snapshot.raceClaims, currentGender),
-    km: getKmRanking(snapshot.members, currentGender),
-    elevation: getElevationRanking(snapshot.members, currentGender),
-  };
+  const rankingRows = getGeneralRanking(
+    snapshot.members,
+    snapshot.raceEvents,
+    snapshot.raceClaims,
+    currentGender,
+    currentPeriod,
+  );
+  const rankingPeriodLabel =
+    currentPeriod === "week" ? "semanal" : currentPeriod === "month" ? "mensual" : "anual";
 
   function refreshPage() {
     startRouteRefresh(() => {
@@ -219,19 +222,39 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
 
           <div className="ranking-controls">
             <div className="ranking-tabs" role="tablist" aria-label="Clasificaciones Liga Felina">
-              <button className={`tab-button ${currentTab === "general" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("general")}>
-                Clasificacion general
-              </button>
-              <button className={`tab-button ${currentTab === "km" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("km")}>
-                DevoraKm
-              </button>
-              <button className={`tab-button ${currentTab === "elevation" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("elevation")}>
-                Devora+
+              <button className={`tab-button ${currentTab === "ranking" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("ranking")}>
+                Clasificacion
               </button>
               <button className={`tab-button ${currentTab === "races" ? "is-active" : ""}`} type="button" onClick={() => setCurrentTab("races")}>
                 DevoraCarreras
               </button>
             </div>
+
+            {currentTab === "ranking" ? (
+              <div className="period-switch" role="tablist" aria-label="Periodo de clasificacion">
+                <button
+                  className={`period-option ${currentPeriod === "year" ? "is-active" : ""}`}
+                  type="button"
+                  onClick={() => setCurrentPeriod("year")}
+                >
+                  Anual
+                </button>
+                <button
+                  className={`period-option ${currentPeriod === "month" ? "is-active" : ""}`}
+                  type="button"
+                  onClick={() => setCurrentPeriod("month")}
+                >
+                  Mensual
+                </button>
+                <button
+                  className={`period-option ${currentPeriod === "week" ? "is-active" : ""}`}
+                  type="button"
+                  onClick={() => setCurrentPeriod("week")}
+                >
+                  Semanal
+                </button>
+              </div>
+            ) : null}
 
             <div className="gender-switch" role="tablist" aria-label="Clasificacion por categoria">
               <button
@@ -259,36 +282,20 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
           </div>
         </div>
 
-        <article className={`ranking-panel ${currentTab === "general" ? "is-active" : ""}`}>
+        <article className={`ranking-panel ${currentTab === "ranking" ? "is-active" : ""}`}>
           <div className="panel-intro">
-            <h3>Clasificacion general</h3>
-            <p>Suma total de puntos de kilometros, desnivel positivo y carreras validadas.</p>
+            <h3>Clasificacion {rankingPeriodLabel}</h3>
+            <p>Suma en una sola tabla los puntos de DevoraKm, Devora+, y DevoraCarreras del periodo seleccionado.</p>
           </div>
           <LeaderboardTable
-            rows={rankings.general}
+            rows={rankingRows}
             currentGender={currentGender}
-            isGeneral
+            period={currentPeriod}
             expandedRows={expandedRows}
             onToggleRow={toggleExpandedRow}
             raceEvents={snapshot.raceEvents}
             raceClaims={snapshot.raceClaims}
           />
-        </article>
-
-        <article className={`ranking-panel ${currentTab === "km" ? "is-active" : ""}`}>
-          <div className="panel-intro">
-            <h3>DevoraKm</h3>
-            <p>Ranking por kilometros acumulados en el ano en curso y su puntuacion asociada.</p>
-          </div>
-          <LeaderboardTable rows={rankings.km} currentGender={currentGender} />
-        </article>
-
-        <article className={`ranking-panel ${currentTab === "elevation" ? "is-active" : ""}`}>
-          <div className="panel-intro">
-            <h3>Devora+</h3>
-            <p>Ranking por desnivel positivo acumulado en el ano en curso y su puntuacion asociada.</p>
-          </div>
-          <LeaderboardTable rows={rankings.elevation} currentGender={currentGender} />
         </article>
 
         <article className={`ranking-panel ${currentTab === "races" ? "is-active" : ""}`}>
@@ -617,7 +624,7 @@ export function LeagueExperience({ snapshot }: { snapshot: LeagueSnapshot }) {
 function LeaderboardTable({
   rows,
   currentGender,
-  isGeneral = false,
+  period,
   expandedRows = [],
   onToggleRow,
   raceEvents = [],
@@ -625,7 +632,7 @@ function LeaderboardTable({
 }: {
   rows: ReturnType<typeof getGeneralRanking>;
   currentGender: LeagueGenderFilter;
-  isGeneral?: boolean;
+  period: LeagueStatsPeriod;
   expandedRows?: string[];
   onToggleRow?: (memberId: string) => void;
   raceEvents?: LeagueSnapshot["raceEvents"];
@@ -650,8 +657,8 @@ function LeaderboardTable({
         </thead>
         <tbody>
           {rows.map((row, index) => {
-            const open = isGeneral && expandedRows.includes(row.id);
-            const breakdown = isGeneral ? getGeneralBreakdown(row, raceEvents, raceClaims) : null;
+            const open = expandedRows.includes(row.id);
+            const breakdown = getGeneralBreakdown(row, raceEvents, raceClaims, period);
             const showPhoto = hasCustomPhoto(row);
 
             return (
@@ -674,39 +681,43 @@ function LeaderboardTable({
                     <div className="athlete-copy">
                       <strong>{getDisplayName(row)}</strong>
                       <div>{row.memberNumber}</div>
-                      {isGeneral ? (
-                        <>
-                          <button
-                            className="general-breakdown-button"
-                            type="button"
-                            onClick={() => onToggleRow?.(row.id)}
-                          >
-                            {open ? "Ocultar detalle" : "Ver detalle"}
-                          </button>
-                          {open && breakdown ? (
-                            <div className="general-breakdown">
-                              <ul className="general-breakdown-list">
+                      <button
+                        className="general-breakdown-button"
+                        type="button"
+                        onClick={() => onToggleRow?.(row.id)}
+                      >
+                        {open ? "Ocultar detalle" : "Ver detalle"}
+                      </button>
+                      {open ? (
+                        <div className="general-breakdown">
+                          <ul className="general-breakdown-list">
+                            <li>
+                              <strong>Puntos DevoraKm:</strong> {formatInteger(breakdown.devoraKmPoints)} pts
+                            </li>
+                            <li>
+                              <strong>Puntos Devora+:</strong> {formatInteger(breakdown.devoraElevationPoints)} pts
+                            </li>
+                            <li>
+                              <strong>Puntos DevoraCarreras:</strong> {formatInteger(breakdown.racePoints)} pts
+                            </li>
+                            {breakdown.races.length ? (
+                              <>
                                 <li>
-                                  <strong>Puntos por Kms:</strong> {formatInteger(breakdown.kmPoints)} pts
+                                  <strong>Carreras acreditadas:</strong>
                                 </li>
-                                <li>
-                                  <strong>Puntos por D+:</strong> {formatInteger(breakdown.elevationPoints)} pts
-                                </li>
-                                {breakdown.races.length ? (
-                                  breakdown.races.map((race) => (
-                                    <li key={`${row.id}-${race.name}`}>
-                                      <strong>{race.name}:</strong> {formatInteger(race.points)} pts
-                                    </li>
-                                  ))
-                                ) : (
-                                  <li>
-                                    <strong>DevoraCarreras:</strong> 0 pts
+                                {breakdown.races.map((race) => (
+                                  <li key={`${row.id}-${race.name}-${race.points}`}>
+                                    <strong>{race.name}:</strong> {formatInteger(race.points)} pts
                                   </li>
-                                )}
-                              </ul>
-                            </div>
-                          ) : null}
-                        </>
+                                ))}
+                              </>
+                            ) : (
+                              <li>
+                                <strong>Carreras acreditadas:</strong> Ninguna en este periodo
+                              </li>
+                            )}
+                          </ul>
+                        </div>
                       ) : null}
                     </div>
                   </div>

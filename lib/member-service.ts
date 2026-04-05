@@ -21,7 +21,7 @@ type MemberProfileRow = Database["public"]["Tables"]["member_profiles"]["Row"];
 type LeagueMemberRow = Database["public"]["Functions"]["list_member_profiles_for_league"]["Returns"][number];
 
 const SESSION_MEMBER_COLUMNS =
-  "user_id,email,first_name,last_name,full_name,member_number,gender,city,upload_photo,strava_photo,photo_source,strava_connected,strava_athlete_id,strava_last_sync_at,year_km,year_elevation,is_admin";
+  "user_id,email,first_name,last_name,full_name,member_number,gender,city,upload_photo,strava_photo,photo_source,strava_connected,strava_athlete_id,strava_last_sync_at,year_km,year_elevation,month_km,month_elevation,week_km,week_elevation,is_admin";
 
 const RESERVED_MEMBER_NUMBERS = new Set(seedMembers.map((member) => member.memberNumber));
 
@@ -90,6 +90,10 @@ function normalizeStravaProfile(profile: StravaProfile | null | undefined): Stra
     profileMedium: normalizeText(profile.profileMedium) || normalizeText(profile.profile),
     ytdKm: Number.isFinite(Number(profile.ytdKm)) ? Number(profile.ytdKm) : 0,
     ytdElevation: Number.isFinite(Number(profile.ytdElevation)) ? Number(profile.ytdElevation) : 0,
+    monthKm: Number.isFinite(Number(profile.monthKm)) ? Number(profile.monthKm) : 0,
+    monthElevation: Number.isFinite(Number(profile.monthElevation)) ? Number(profile.monthElevation) : 0,
+    weekKm: Number.isFinite(Number(profile.weekKm)) ? Number(profile.weekKm) : 0,
+    weekElevation: Number.isFinite(Number(profile.weekElevation)) ? Number(profile.weekElevation) : 0,
   };
 }
 
@@ -110,6 +114,10 @@ function toJsonProfile(profile: StravaProfile | null): Json | undefined {
     profileMedium: profile.profileMedium,
     ytdKm: profile.ytdKm,
     ytdElevation: profile.ytdElevation,
+    monthKm: profile.monthKm,
+    monthElevation: profile.monthElevation,
+    weekKm: profile.weekKm,
+    weekElevation: profile.weekElevation,
   };
 }
 
@@ -129,6 +137,10 @@ function mapMemberRow(row: LeagueMemberRow): Member {
     stravaAthleteId: row.strava_athlete_id ?? null,
     yearKm: Number(row.year_km || 0),
     yearElevation: Number(row.year_elevation || 0),
+    monthKm: Number(row.month_km || 0),
+    monthElevation: Number(row.month_elevation || 0),
+    weekKm: Number(row.week_km || 0),
+    weekElevation: Number(row.week_elevation || 0),
     isAdmin: row.is_admin,
     stravaLastSyncAt: row.strava_last_sync_at ?? null,
   };
@@ -151,6 +163,10 @@ function mapSessionMemberRow(row: MemberProfileRow): SessionMember {
     stravaAthleteId: row.strava_athlete_id ?? null,
     yearKm: Number(row.year_km || 0),
     yearElevation: Number(row.year_elevation || 0),
+    monthKm: Number(row.month_km || 0),
+    monthElevation: Number(row.month_elevation || 0),
+    weekKm: Number(row.week_km || 0),
+    weekElevation: Number(row.week_elevation || 0),
     isAdmin: row.is_admin,
     stravaLastSyncAt: row.strava_last_sync_at ?? null,
   };
