@@ -53,35 +53,34 @@ export function SiteFooter() {
 
       <div className="footer-main-shell">
         <section className="footer-newsletter-strip">
-          <div className="footer-section-inner footer-newsletter-grid">
-            <div className="footer-newsletter-copy">
-              <h3>Unete a nuestro boletin de noticias</h3>
-              <p>Alertas de club, avisos de carreras, cambios en la Liga Felina y novedades de temporada.</p>
+            <div className="footer-section-inner footer-newsletter-grid">
+              <div className="footer-newsletter-copy">
+                <h3>Únete a nuestro boletín de noticias</h3>
+              </div>
+              <FooterNewsletterForm />
             </div>
-            <FooterNewsletterForm />
-          </div>
         </section>
 
         <section className="footer-brand-strip">
           <div className="footer-section-inner footer-brand-grid">
-            <div className="footer-brand-lockup">
+            <div className="footer-brand-mark footer-brand-mark--club">
               <Image
-                src="/assets/logos/logo_2026.png"
+                src="/assets/logos/footer-logo.svg"
                 alt="Logo de Los Leones del Trail"
-                width={88}
-                height={88}
-                unoptimized
+                width={480}
+                height={296}
+                className="footer-brand-mark-image footer-brand-mark-image--club"
               />
-              <div>
-                <strong>Los Leones del Trail</strong>
-                <p>Club deportivo de trail running, comunidad y montana compartida.</p>
-              </div>
             </div>
 
-            <div className="footer-brand-accent">
-              <span className="footer-brand-kicker">Temporada 2026</span>
-              <strong>Ruge con la manada</strong>
-              <p>Entrena, compite y crece con la comunidad del club.</p>
+            <div className="footer-brand-mark footer-brand-mark--league">
+              <Image
+                src="/assets/logos/footer-liga-felina.svg"
+                alt="Logo de Liga Felina"
+                width={360}
+                height={140}
+                className="footer-brand-mark-image footer-brand-mark-image--league"
+              />
             </div>
           </div>
         </section>
@@ -134,10 +133,10 @@ export function SiteFooter() {
 
       <section className="footer-bottom-bar">
         <div className="footer-section-inner footer-bottom-content">
-          <p className="footer-bottom-primary">Los Leones del Trail - Comunidad de trail running</p>
-          <p className="footer-bottom-secondary">Copyright 2026. Todos los derechos reservados.</p>
-          <p>Los Leones del Trail · Comunidad de trail running</p>
-          <p>Copyright © 2026. Todos los derechos reservados.</p>
+          <p className="social-copy footer-bottom-primary">powered by canal3networks.com</p>
+          <p className="social-copy footer-bottom-secondary">
+            Copyright {"\u00A9"} 2026. Los Leones del Trail Todos los derechos reservados.
+          </p>
         </div>
       </section>
     </footer>

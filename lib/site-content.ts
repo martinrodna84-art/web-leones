@@ -2,7 +2,7 @@ export const socialLinks = [
   { href: "https://www.youtube.com/c/LosLeonesdelTrail/", label: "YouTube", symbol: "▶" },
   { href: "https://www.instagram.com/losleonesdeltrail/", label: "Instagram", symbol: "◎" },
   { href: "https://www.facebook.com/LosLeonesdelTrail/", label: "Facebook", symbol: "f" },
-  { href: "", label: "X", symbol: "X" },
+  { href: "https://x.com/martin_ultrarun", label: "X", symbol: "X" },
   { href: "https://www.strava.com/clubs/459274", label: "Strava", symbol: "S" },
 ];
 
@@ -10,7 +10,7 @@ export const socialBarLinks = [
   { href: "https://www.youtube.com/c/LosLeonesdelTrail/", label: "YouTube" },
   { href: "https://www.instagram.com/losleonesdeltrail/", label: "Instagram" },
   { href: "https://www.facebook.com/LosLeonesdelTrail/", label: "Facebook" },
-  { href: "", label: "X" },
+  { href: "https://x.com/martin_ultrarun", label: "X" },
   { href: "https://www.strava.com/clubs/459274", label: "Strava" },
 ];
 
@@ -18,7 +18,7 @@ export const footerSocialLinks = [
   { href: "https://www.youtube.com/c/LosLeonesdelTrail/", label: "YouTube" },
   { href: "https://www.instagram.com/losleonesdeltrail/", label: "Instagram" },
   { href: "https://www.facebook.com/LosLeonesdelTrail/", label: "Facebook" },
-  { href: "", label: "X" },
+  { href: "https://x.com/martin_ultrarun", label: "X" },
   { href: "https://www.strava.com/clubs/459274", label: "Strava" },
 ];
 

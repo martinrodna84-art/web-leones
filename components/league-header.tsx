@@ -85,10 +85,10 @@ export function LeagueHeader({
       <nav className={`main-nav league-main-nav ${teko.className}`}>
         <Link className="brand" href="/">
           <Image
-            src="/assets/logos/logo_header_clean.png"
+            src="/assets/logos/logo-header.svg"
             alt="Logo de Los Leones del Trail"
-            width={340}
-            height={51}
+            width={360}
+            height={60}
             className="brand-logo"
             priority
             unoptimized

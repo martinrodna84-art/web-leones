@@ -9,7 +9,7 @@ type NewsletterState = {
 
 const INITIAL_STATE: NewsletterState = {
   tone: "idle",
-  message: "Prometemos solo avisos utiles: club, rutas, retos y aperturas de inscripcion.",
+  message: "",
 };
 
 export function FooterNewsletterForm() {
@@ -60,9 +60,9 @@ export function FooterNewsletterForm() {
   }
 
   return (
-    <form className="footer-newsletter-form" onSubmit={handleSubmit}>
+      <form className="footer-newsletter-form" onSubmit={handleSubmit}>
       <label className="sr-only" htmlFor="footer-newsletter-email">
-        Correo electronico
+        Correo electrónico
       </label>
       <input
         id="footer-newsletter-email"
@@ -70,12 +70,12 @@ export function FooterNewsletterForm() {
         type="email"
         autoComplete="email"
         required
-        placeholder="Correo electronico"
+        placeholder="Correo electrónico"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
       />
-      <button type="submit" disabled={isPending}>
-        {isPending ? "Enviando" : "Enviar"}
+      <button className="button button-primary footer-newsletter-submit" type="submit" disabled={isPending}>
+        {isPending ? "ENVIANDO" : "ENVIAR"}
       </button>
       <p className={`footer-newsletter-note is-${state.tone}`}>{state.message}</p>
     </form>
