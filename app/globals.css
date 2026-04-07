@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --footer-inner-width: min(1240px, calc(100% - 3rem));
+  --footer-inner-width: min(1140px, calc(100% - 3rem));
   --brand-navy: #001F35;
   --brand-lime: #D0F700;
   --brand-white: #ffffff;
@@ -84,7 +84,7 @@ textarea {
   width: 100%;
   border: 1px solid rgba(208, 247, 0, 0.18);
   border-radius: 0;
-  padding: 0.95rem 1rem;
+  padding: 15px 1rem;
   background: #001726;
   color: var(--ink);
 }
@@ -114,7 +114,7 @@ a:focus-visible {
   flex-wrap: nowrap;
   gap: 1rem;
   min-height: 42px;
-  padding: 0.3rem clamp(1rem, 2.5vw, 2.5rem);
+  padding: 5px clamp(1rem, 3vw, 40px);
   background: var(--lime);
   color: #001F35;
   border-bottom: 1px solid rgba(7, 19, 22, 0.14);
@@ -125,7 +125,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  gap: 0.35rem 0.75rem;
+  gap: 6px 12px;
   min-width: 0;
 }
 
@@ -139,9 +139,9 @@ a:focus-visible {
 .social-kicker {
   display: inline-flex;
   align-items: center;
-  font-size: 0.7rem;
+  font-size: 0.5rem;
   font-weight: 400;
-  letter-spacing: 0.18em;
+  letter-spacing: normal;
   text-transform: uppercase;
 }
 
@@ -160,7 +160,7 @@ a:focus-visible {
   font-size: 17px;
   font-weight: 600;
   line-height: 17px;
-  letter-spacing: 0 !important;
+  letter-spacing: normal !important;
   font-kerning: none;
   font-feature-settings: "kern" 0;
   word-spacing: 0;
@@ -220,8 +220,8 @@ a:focus-visible {
 }
 
 .social-icon--youtube {
-  width: 16px;
-  height: 12px;
+  width: 17px;
+  height: 13px;
 }
 
 .social-icon--instagram {
@@ -254,7 +254,7 @@ a:focus-visible {
   background: #000;
   color: var(--sky);
   font-weight: 800;
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
   text-transform: uppercase;
 }
 
@@ -264,7 +264,7 @@ a:focus-visible {
   isolation: isolate;
   z-index: 20;
   width: 100%;
-  padding: 0 0 7.5rem;
+  padding: 0 0 120px;
   background:
     url("/assets/hero/hero_landing.png")
       center right / cover;
@@ -299,13 +299,24 @@ a:focus-visible {
   width: 100%;
   min-height: 80px;
   background: var(--header-bg);
-  padding: 0.1rem clamp(1rem, 2.5vw, 2.5rem);
+  padding: 2px clamp(1rem, 3vw, 40px);
   z-index: 30;
   isolation: isolate;
 }
 
 .hero > .main-nav {
   background: var(--header-bg);
+}
+
+@media (min-width: 821px) {
+  .main-nav {
+    padding-left: 0;
+    padding-right: 40px;
+  }
+
+  .brand {
+    padding-left: 40px;
+  }
 }
 
 .brand,
@@ -315,15 +326,15 @@ a:focus-visible {
   gap: 0;
   flex-shrink: 0;
   min-height: 60px;
-  margin-left: 30px;
+  margin-left: 0;
 }
 
 .brand-logo {
   display: block;
   object-fit: contain;
-  width: auto;
-  height: 60px;
-  max-width: min(56vw, 360px);
+  width: 78px;
+  height: 48px;
+  max-width: 78px;
   background: transparent;
   box-shadow: none;
   filter: none;
@@ -332,7 +343,7 @@ a:focus-visible {
 .brand strong,
 .hero-brand strong {
   display: block;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .brand small,
@@ -361,8 +372,8 @@ a:focus-visible {
   background: transparent;
   font-family: inherit;
   font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.7px;
+  font-weight: 600;
+  letter-spacing: normal;
   text-transform: uppercase;
 }
 
@@ -379,7 +390,7 @@ a:focus-visible {
   transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 6px;
   margin-left: 0;
 }
 
@@ -396,19 +407,19 @@ a:focus-visible {
   display: inline-flex;
   align-items: center;
   min-height: 46px;
-  gap: 0.5rem;
-  padding: 0.8rem 1rem;
+  gap: 8px;
+  padding: 13px 1rem;
   color: var(--ink);
   font-family: inherit;
   font-size: 18px;
   font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.7px;
+  letter-spacing: normal;
   transition: color 0.3s ease;
 }
 
 .nav-link--dropdown {
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .nav-link-label {
@@ -441,7 +452,7 @@ a:focus-visible {
   top: 100%;
   left: 0;
   min-width: 240px;
-  padding: 0.75rem;
+  padding: 12px;
   display: none;
   background: var(--header-bg);
   border: 0;
@@ -453,18 +464,18 @@ a:focus-visible {
 
 .nav-item.open .dropdown {
   display: grid;
-  gap: 0.3rem;
+  gap: 5px;
 }
 
 .dropdown a {
   display: inline-flex;
   align-items: center;
-  padding: 0.7rem 0.75rem;
+  padding: 11px 12px;
   color: rgba(237, 245, 240, 0.88);
   font-family: var(--font-nav);
   font-size: 18px;
   font-weight: 400;
-  letter-spacing: 0.7px;
+  letter-spacing: normal;
   text-transform: uppercase;
   transition: color 0.3s ease;
 }
@@ -480,7 +491,7 @@ a:focus-visible {
 .header-session {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 13px;
   text-decoration: none;
 }
 
@@ -517,7 +528,7 @@ a:focus-visible {
 
 .header-session-copy span {
   color: rgba(237, 245, 240, 0.76);
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .league-session-shell {
@@ -583,9 +594,9 @@ a:focus-visible {
   top: 100%;
   right: 0;
   min-width: 220px;
-  padding: 0.55rem;
+  padding: 9px;
   display: grid;
-  gap: 0.2rem;
+  gap: 3px;
   border-radius: 0;
   background: var(--header-bg);
   border: 0;
@@ -603,7 +614,7 @@ a:focus-visible {
   display: flex;
   align-items: center;
   min-height: 44px;
-  padding: 0.8rem 0.95rem;
+  padding: 13px 15px;
   border: 0;
   border-radius: 0;
   background: transparent;
@@ -612,7 +623,7 @@ a:focus-visible {
   font-size: 18px;
   text-align: left;
   font-weight: 400;
-  letter-spacing: 0.7px;
+  letter-spacing: normal;
   text-transform: uppercase;
   cursor: pointer;
   transition: color 0.3s ease;
@@ -660,10 +671,10 @@ a:focus-visible {
 }
 
 .league-session-note {
-  margin: 0.2rem 0 0;
-  padding: 0.35rem 0.6rem;
+  margin: 3px 0 0;
+  padding: 6px 10px;
   color: rgba(237, 245, 240, 0.72);
-  font-size: 0.82rem;
+  font-size: 1rem;
 }
 
 .mobile-session-panel {
@@ -674,9 +685,9 @@ a:focus-visible {
   margin: 0;
   color: rgba(237, 245, 240, 0.48);
   font-family: var(--font-nav);
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 0.12em;
+  letter-spacing: normal;
   text-transform: uppercase;
 }
 
@@ -685,14 +696,14 @@ a:focus-visible {
   display: flex;
   align-items: center;
   min-height: 46px;
-  padding: 0.8rem 1rem;
+  padding: 13px 1rem;
   border: 0;
   background: transparent;
   color: rgba(237, 245, 240, 0.88);
   font-family: var(--font-nav);
   font-size: 18px;
   font-weight: 400;
-  letter-spacing: 0.7px;
+  letter-spacing: normal;
   text-transform: uppercase;
   text-align: left;
   transition: color 0.3s ease;
@@ -714,9 +725,9 @@ a:focus-visible {
 
 .mobile-session-note {
   margin: 0;
-  padding: 0.25rem 1rem 0;
+  padding: 4px 1rem 0;
   color: rgba(237, 245, 240, 0.72);
-  font-size: 0.82rem;
+  font-size: 1rem;
 }
 
 .hero-layout,
@@ -725,7 +736,7 @@ a:focus-visible {
   grid-template-columns: minmax(0, 1.4fr) minmax(290px, 390px);
   gap: 2rem;
   align-items: center;
-  padding-top: 2.8rem;
+  padding-top: 45px;
   max-width: 1240px;
   margin: 0 auto;
 }
@@ -736,7 +747,7 @@ a:focus-visible {
   min-height: clamp(620px, 74vh, 860px);
   align-content: start;
   justify-items: start;
-  padding: 4.9rem 1.5rem 6.2rem;
+  padding: 78px 24px 99px;
   z-index: 2;
 }
 
@@ -769,9 +780,9 @@ a:focus-visible {
   color: var(--white);
   font-family: var(--font-teko);
   font-size: 50px;
-  font-weight: 300;
+  font-weight: 400;
   line-height: 0.95;
-  letter-spacing: 0.01em;
+  letter-spacing: normal;
   text-transform: none;
 }
 
@@ -783,17 +794,17 @@ a:focus-visible {
 .panel-intro h3,
 .site-footer strong {
   font-family: var(--font-display);
-  letter-spacing: 0.04em;
+  letter-spacing: normal;
 }
 
 .eyebrow,
 .panel-kicker,
 .card-kicker,
 .tag {
-  margin: 0 0 0.6rem;
+  margin: 0 0 10px;
   font-family: var(--font-teko);
-  font-size: 0.95rem;
-  letter-spacing: 0.18em;
+  font-size: 1rem;
+  letter-spacing: normal;
   text-transform: uppercase;
   font-weight: 400;
 }
@@ -806,10 +817,10 @@ a:focus-visible {
   color: #FFFFFF;
   margin: 0;
   font-family: var(--font-teko);
-  font-size: clamp(1.78rem, 3.25vw, 2.85rem);
-  font-weight: 300;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 400;
   line-height: 0.95;
-  letter-spacing: 0.01em;
+  letter-spacing: normal;
   text-transform: none;
 }
 
@@ -820,24 +831,24 @@ a:focus-visible {
 
 .hero-copy h1:not(.hero-headline),
 .hero-copy h2 {
-  font-size: clamp(3.2rem, 8vw, 5.6rem);
+  font-size: clamp(3rem, 8vw, 5.5rem);
   line-height: 0.92;
 }
 
 .league-hero-title {
   color: var(--lime);
   font-family: var(--font-teko);
-  font-size: clamp(3.05rem, 6.1vw, 3.65rem);
+  font-size: clamp(3rem, 6vw, 3.5rem);
   font-weight: 600;
-  letter-spacing: 0.015em;
+  letter-spacing: normal;
   line-height: 0.86;
   text-transform: uppercase;
 }
 
 .league-hero-title--stacked {
   display: block;
-  margin-top: 0.2rem;
-  max-width: 16.8ch;
+  margin-top: 3px;
+  max-width: 17ch;
 }
 
 .league-hero-title--stacked span {
@@ -850,10 +861,10 @@ a:focus-visible {
   max-width: 31ch;
   color: var(--white);
   font-family: var(--font-arboria-book), var(--font-arboria-book-fallback);
-  font-size: clamp(0.95rem, 1.62vw, 1.18rem);
+  font-size: clamp(1rem, 1.5vw, 1rem);
   font-weight: 400;
   line-height: 1.22;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
 }
 
 .league-hero-layout--with-strava {
@@ -863,7 +874,7 @@ a:focus-visible {
 .league-strava-badge {
   position: absolute;
   right: 0;
-  bottom: 1.35rem;
+  bottom: 22px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -887,14 +898,14 @@ a:focus-visible {
 
 .hero-copy h1.hero-headline {
   display: block;
-  margin-top: 0.2rem;
+  margin-top: 3px;
   width: max-content;
   max-width: none;
   color: var(--lime);
   font-family: var(--font-teko);
   font-size: 80px;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: normal;
   line-height: 0.84;
   text-transform: uppercase;
   white-space: nowrap;
@@ -910,7 +921,7 @@ a:focus-visible {
 .section-heading p,
 .spotlight-copy p,
 .panel-intro p {
-  font-size: 1.05rem;
+  font-size: 1rem;
   line-height: 1.7;
 }
 
@@ -931,7 +942,7 @@ a:focus-visible {
   font-size: 19px;
   font-weight: 400;
   line-height: 1.22;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
 }
 
 .hero-actions,
@@ -940,12 +951,12 @@ a:focus-visible {
 .strava-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.85rem;
+  gap: 14px;
 }
 
 .hero-actions {
   margin-top: 2rem;
-  gap: 1.2rem;
+  gap: 19px;
 }
 
 .button,
@@ -954,14 +965,14 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   min-height: 48px;
-  padding: 0.85rem 1.35rem;
+  padding: 14px 22px;
   border: 1px solid transparent;
   border-radius: 0;
   cursor: pointer;
   font-family: var(--font-teko);
-  font-size: 1.08rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: normal;
   text-transform: uppercase;
   transition: background 180ms ease, color 180ms ease, border-color 180ms ease, opacity 180ms ease;
 }
@@ -1004,13 +1015,13 @@ a:focus-visible {
   min-width: 0;
   height: auto;
   min-height: 46px;
-  padding: 0 1.2rem;
+  padding: 0 19px;
   border: 1px solid rgba(208, 247, 0, 0.8);
   font-family: var(--font-teko);
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   line-height: 1;
-  letter-spacing: 0.05em;
+  letter-spacing: normal;
   text-transform: uppercase;
   box-shadow: none;
   white-space: nowrap;
@@ -1090,7 +1101,7 @@ a:focus-visible {
 
 .hero-panel,
 .hero-sidecard {
-  padding: 1.7rem;
+  padding: 27px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -1105,7 +1116,7 @@ a:focus-visible {
   background:
     linear-gradient(180deg, #001726 0%, #001726 48%, #001C30 100%);
   color: var(--ink);
-  padding: 4.5rem 0 0;
+  padding: 72px 0 0;
 }
 
 .landing-story-stack {
@@ -1159,8 +1170,8 @@ a:focus-visible {
 
 .landing-z-media-badge {
   position: absolute;
-  left: clamp(1.4rem, 3vw, 2.3rem);
-  bottom: clamp(1.4rem, 3vw, 2.3rem);
+  left: clamp(22px, 3vw, 37px);
+  bottom: clamp(22px, 3vw, 37px);
   z-index: 1;
   display: grid;
   place-items: center;
@@ -1179,7 +1190,7 @@ a:focus-visible {
 .landing-z-copy {
   display: grid;
   align-content: center;
-  gap: 1.15rem;
+  gap: 18px;
   padding: clamp(2rem, 5vw, 4rem);
   background:
     linear-gradient(180deg, #001726 0%, #001A2D 100%);
@@ -1204,15 +1215,15 @@ a:focus-visible {
 .training-card h3,
 .member-zone-identity h3 {
   font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: 0.03em;
+  font-weight: 600;
+  letter-spacing: normal;
 }
 
 .landing-z-copy h2,
 .landing-sponsors-head h2 {
   margin: 0;
   color: var(--white);
-  font-size: clamp(2.4rem, 4.3vw, 4.2rem);
+  font-size: clamp(2.5rem, 4.5vw, 4rem);
   line-height: 0.92;
 }
 
@@ -1226,7 +1237,7 @@ a:focus-visible {
 
 .landing-z-list {
   display: grid;
-  gap: 0.8rem;
+  gap: 13px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -1235,7 +1246,7 @@ a:focus-visible {
 .landing-z-list li {
   display: flex;
   align-items: flex-start;
-  gap: 0.8rem;
+  gap: 13px;
   color: rgba(231, 239, 233, 0.9);
 }
 
@@ -1243,7 +1254,7 @@ a:focus-visible {
   width: 18px;
   height: 18px;
   flex: none;
-  margin-top: 0.18rem;
+  margin-top: 3px;
   color: var(--lime);
 }
 
@@ -1253,14 +1264,14 @@ a:focus-visible {
   justify-content: center;
   min-height: 46px;
   width: max-content;
-  padding: 0 1.2rem;
+  padding: 0 19px;
   border: 1px solid rgba(208, 247, 0, 0.8);
   background: transparent;
   color: var(--lime);
   font-family: var(--font-teko);
-  font-size: 1.1rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: normal;
   text-transform: uppercase;
   transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
 }
@@ -1275,14 +1286,14 @@ a:focus-visible {
 .landing-sponsors {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 4.4rem 1.5rem 5rem;
+  padding: 70px 24px 5rem;
 }
 
 .landing-sponsors-head {
   display: grid;
   gap: 1rem;
   max-width: 760px;
-  margin-bottom: 1.8rem;
+  margin-bottom: 29px;
 }
 
 .landing-sponsor-grid {
@@ -1294,9 +1305,9 @@ a:focus-visible {
 .landing-sponsor-card {
   display: grid;
   align-content: start;
-  gap: 0.9rem;
+  gap: 14px;
   min-height: 270px;
-  padding: 1.5rem;
+  padding: 24px;
   border: 1px solid rgba(208, 247, 0, 0.18);
   border-radius: 0;
   background:
@@ -1316,7 +1327,7 @@ a:focus-visible {
   color: var(--lime);
   font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 0.06em;
+  letter-spacing: normal;
   text-transform: uppercase;
 }
 
@@ -1339,13 +1350,13 @@ a:focus-visible {
 .training-grid,
 .rules-grid {
   display: grid;
-  gap: 1.25rem;
+  gap: 20px;
 }
 
 .quick-access {
   max-width: 1240px;
-  margin: 2.25rem auto 0;
-  padding: 0 1.5rem;
+  margin: 36px auto 0;
+  padding: 0 24px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   z-index: 5;
 }
@@ -1355,7 +1366,7 @@ a:focus-visible {
 .spotlight-card,
 .training-card,
 .rule-card {
-  padding: 1.5rem;
+  padding: 24px;
   background:
     linear-gradient(180deg, #00233D 0%, #00314F 100%);
   border: 1px solid rgba(208, 247, 0, 0.12);
@@ -1373,8 +1384,8 @@ a:focus-visible {
 .spotlight-card h3,
 .training-card h3,
 .rule-card h3 {
-  margin: 0.3rem 0 0.6rem;
-  font-size: 1.45rem;
+  margin: 5px 0 10px;
+  font-size: 1.5rem;
 }
 
 .quick-card.accent {
@@ -1385,13 +1396,13 @@ a:focus-visible {
 .league-main {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 4rem 1.5rem 0;
+  padding: 4rem 24px 0;
   color: var(--ink);
 }
 
 .section-heading {
   max-width: 760px;
-  margin-bottom: 1.8rem;
+  margin-bottom: 29px;
 }
 
 .info-grid {
@@ -1401,7 +1412,7 @@ a:focus-visible {
 .spotlight {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 1.5rem;
+  gap: 24px;
   align-items: start;
 }
 
@@ -1414,7 +1425,7 @@ a:focus-visible {
 .contact-section {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(320px, 1fr);
-  gap: 1.5rem;
+  gap: 24px;
   align-items: start;
   padding-bottom: 4rem;
 }
@@ -1429,11 +1440,11 @@ a:focus-visible {
 .member-form label,
 .race-selector-label {
   display: grid;
-  gap: 0.45rem;
+  gap: 7px;
   font-family: var(--font-teko);
-  font-size: 1.02rem;
+  font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 0.04em;
+  letter-spacing: normal;
   text-transform: uppercase;
   color: rgba(231, 239, 233, 0.86);
 }
@@ -1455,7 +1466,7 @@ a:focus-visible {
 .form-note {
   margin: 0;
   color: rgba(231, 239, 233, 0.72);
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .league-hero {
@@ -1467,7 +1478,7 @@ a:focus-visible {
   width: 100%;
   max-width: none;
   margin: 0;
-  padding: 0 0 2.3rem;
+  padding: 0 0 37px;
   color: #ffffff;
   background:
     linear-gradient(135deg, rgba(0, 31, 53, 0.96), rgba(0, 31, 53, 0.82)),
@@ -1477,7 +1488,7 @@ a:focus-visible {
 }
 
 .compact-hero {
-  padding-bottom: 1.8rem;
+  padding-bottom: 29px;
 }
 
 .compact-layout {
@@ -1513,11 +1524,11 @@ a:focus-visible {
 }
 
 .league-main {
-  padding-top: 2.5rem;
+  padding-top: 40px;
 }
 
 .league-hero-layout {
-  padding: 2.4rem 1.5rem 0;
+  padding: 38px 24px 0;
   width: min(1240px, calc(100% - 3rem));
 }
 
@@ -1525,8 +1536,8 @@ a:focus-visible {
   min-height: clamp(620px, 74vh, 860px);
   align-content: start;
   justify-items: start;
-  padding-top: 4.9rem;
-  padding-bottom: 6.2rem;
+  padding-top: 78px;
+  padding-bottom: 99px;
 }
 
 .ranking-section,
@@ -1538,9 +1549,9 @@ a:focus-visible {
 .ranking-head {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 19px;
   align-items: stretch;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
 }
 
 .ranking-head-copy {
@@ -1553,7 +1564,7 @@ a:focus-visible {
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 0.85rem;
+  gap: 14px;
   width: 100%;
 }
 
@@ -1619,14 +1630,14 @@ a:focus-visible {
   border: 1px solid transparent;
   border-radius: 0;
   background: transparent;
-  padding: 0.85rem 1rem;
+  padding: 14px 1rem;
   margin: 0;
   min-height: 50px;
   cursor: pointer;
   font-family: var(--font-teko);
-  font-size: 1.04rem;
+  font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: normal;
   text-transform: uppercase;
   color: rgba(231, 239, 233, 0.66);
   transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
@@ -1636,14 +1647,14 @@ a:focus-visible {
   border: 1px solid transparent;
   border-radius: 0;
   background: transparent;
-  padding: 0.85rem 1rem;
+  padding: 14px 1rem;
   margin: 0;
   min-height: 50px;
   cursor: pointer;
   font-family: var(--font-teko);
-  font-size: 1.04rem;
+  font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: normal;
   text-transform: uppercase;
   color: rgba(231, 239, 233, 0.66);
   transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease;
@@ -1692,7 +1703,7 @@ a:focus-visible {
 .ranking-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 12px;
   margin-bottom: 0;
   flex: 1 1 620px;
   justify-content: flex-start;
@@ -1701,14 +1712,14 @@ a:focus-visible {
 .tab-button {
   border: 1px solid rgba(208, 247, 0, 0.18);
   border-radius: 0;
-  padding: 0.85rem 1rem;
+  padding: 14px 1rem;
   min-height: 50px;
   background: #001726;
   cursor: pointer;
   font-family: var(--font-teko);
-  font-size: 1.04rem;
+  font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: normal;
   text-transform: uppercase;
   color: rgba(231, 239, 233, 0.68);
 }
@@ -1730,7 +1741,7 @@ a:focus-visible {
 .panel-intro {
   display: grid;
   align-content: start;
-  gap: 0.35rem;
+  gap: 6px;
   margin-bottom: 1rem;
   min-height: 92px;
 }
@@ -1774,9 +1785,9 @@ a:focus-visible {
 
 .ranking-table thead th {
   font-family: var(--font-teko);
-  font-size: 1.02rem;
+  font-size: 1rem;
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: normal;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -1803,7 +1814,7 @@ a:focus-visible {
 
 .athlete-cell {
   display: flex;
-  gap: 0.9rem;
+  gap: 14px;
   min-width: 0;
   align-items: flex-start;
 }
@@ -1811,7 +1822,7 @@ a:focus-visible {
 .athlete-copy {
   min-width: 0;
   display: grid;
-  gap: 0.16rem;
+  gap: 3px;
 }
 
 .athlete-copy strong,
@@ -1835,9 +1846,9 @@ a:focus-visible {
 
 .athlete-avatar--initials {
   font-family: var(--font-teko);
-  font-size: 1.2rem;
-  font-weight: 500;
-  letter-spacing: 0.04em;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: normal;
   text-transform: uppercase;
 }
 
@@ -1848,13 +1859,13 @@ a:focus-visible {
 .claim-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.7rem;
+  gap: 6px;
+  padding: 7px 11px;
   border-radius: 0;
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-family: var(--font-teko);
   font-weight: 400;
-  letter-spacing: 0.05em;
+  letter-spacing: normal;
   text-transform: uppercase;
 }
 
@@ -1918,14 +1929,14 @@ a:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  padding-inline: 0.55rem;
-  font-size: 0.84rem;
-  letter-spacing: 0.035em;
+  padding-inline: 9px;
+  font-size: 1rem;
+  letter-spacing: normal;
   line-height: 1.2;
 }
 
 .general-breakdown-button {
-  margin-top: 0.45rem;
+  margin-top: 7px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -1933,27 +1944,27 @@ a:focus-visible {
   font-family: var(--font-teko);
   cursor: pointer;
   font-weight: 400;
-  letter-spacing: 0.04em;
+  letter-spacing: normal;
   text-transform: uppercase;
 }
 
 .general-breakdown {
-  margin-top: 0.85rem;
+  margin-top: 14px;
 }
 
 .general-breakdown-list {
   margin: 0;
   padding-left: 1rem;
   display: grid;
-  gap: 0.35rem;
+  gap: 6px;
 }
 
 .auth-grid,
 .manage-grid {
   display: grid;
-  gap: 1.3rem;
+  gap: 21px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
 }
 
 .auth-grid-single {
@@ -1966,14 +1977,14 @@ a:focus-visible {
 }
 
 .member-zone-intro {
-  margin-bottom: 1.6rem;
+  margin-bottom: 26px;
   text-align: center;
 }
 
 .member-zone-card {
   max-width: 760px;
   margin: 0 auto;
-  padding: 2.2rem 1.5rem 1.8rem;
+  padding: 35px 24px 29px;
   border-radius: 0;
   background: linear-gradient(180deg, #001C30 0%, #00233D 100%);
   border: 1px solid rgba(208, 247, 0, 0.18);
@@ -2018,40 +2029,40 @@ a:focus-visible {
   border: 3px solid #001F35;
   background: #fc5200;
   color: var(--white);
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 900;
 }
 
 .member-zone-identity {
   display: grid;
   justify-items: center;
-  gap: 0.55rem;
+  gap: 9px;
   text-align: center;
 }
 
 .member-zone-identity h3 {
   margin: 0;
-  font-size: clamp(1.9rem, 3.8vw, 2.4rem);
+  font-size: clamp(2rem, 4vw, 2.5rem);
 }
 
 .member-zone-chip {
   display: inline-flex;
   align-items: center;
   min-height: 32px;
-  padding: 0.35rem 0.9rem;
+  padding: 6px 14px;
   border-radius: 0;
   background: var(--lime);
   color: var(--coal);
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-family: var(--font-teko);
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: normal;
 }
 
 .member-zone-divider {
   height: 3px;
-  margin: 1.6rem -1.5rem 1.5rem;
+  margin: 26px -24px 24px;
   background: linear-gradient(90deg, rgba(208, 247, 0, 0.82), rgba(208, 247, 0, 0.96));
 }
 
@@ -2062,7 +2073,7 @@ a:focus-visible {
 }
 
 .member-zone-metric {
-  padding: 1.35rem 1.2rem;
+  padding: 22px 19px;
   border-radius: 0;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(208, 247, 0, 0.14);
@@ -2071,17 +2082,17 @@ a:focus-visible {
 
 .member-zone-metric-label {
   display: block;
-  margin-bottom: 0.7rem;
+  margin-bottom: 11px;
   color: rgba(237, 245, 240, 0.55);
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
+  letter-spacing: normal;
 }
 
 .member-zone-metric-value {
   color: var(--sky);
-  font-size: clamp(1.8rem, 4vw, 2.2rem);
+  font-size: clamp(2rem, 4vw, 2rem);
   line-height: 1;
 }
 
@@ -2096,9 +2107,9 @@ a:focus-visible {
 .member-zone-status {
   display: grid;
   justify-items: center;
-  gap: 0.7rem;
-  margin-top: 1.6rem;
-  padding-top: 1.5rem;
+  gap: 11px;
+  margin-top: 26px;
+  padding-top: 24px;
   text-align: center;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
@@ -2117,15 +2128,15 @@ a:focus-visible {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.85rem;
-  margin-top: 0.5rem;
+  gap: 14px;
+  margin-top: 8px;
 }
 
 .auth-card,
 .race-event-form,
 .race-claim-form,
 .race-event-card {
-  padding: 1.5rem;
+  padding: 24px;
   background: linear-gradient(180deg, #00233D 0%, #00314F 100%);
   border: 1px solid rgba(208, 247, 0, 0.16);
   color: var(--ink);
@@ -2145,7 +2156,7 @@ a:focus-visible {
 
 .card-head-stack > div {
   display: grid;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .full-width {
@@ -2155,7 +2166,7 @@ a:focus-visible {
 .member-entry-note {
   margin: 0;
   color: rgba(237, 245, 240, 0.82);
-  font-size: 0.94rem;
+  font-size: 1rem;
 }
 
 .inline-form-link {
@@ -2169,12 +2180,12 @@ a:focus-visible {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
 .field-link-copy {
-  font-size: 0.82rem;
+  font-size: 1rem;
   font-weight: 600;
   color: rgba(237, 245, 240, 0.82);
 }
@@ -2182,7 +2193,7 @@ a:focus-visible {
 .strava-box,
 .session-box,
 .races-placeholder {
-  padding: 1.1rem;
+  padding: 18px;
   border-radius: 0;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(208, 247, 0, 0.16);
@@ -2246,15 +2257,15 @@ a:focus-visible {
 
 .session-label {
   margin-top: 0;
-  font-size: 0.88rem;
+  font-size: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: normal;
   color: rgba(237, 245, 240, 0.72);
 }
 
 .session-user {
   display: flex;
-  gap: 0.9rem;
+  gap: 14px;
   align-items: center;
   margin-bottom: 1rem;
 }
@@ -2306,7 +2317,7 @@ a:focus-visible {
 .mode-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 10px;
 }
 
 .claim-badge {
@@ -2319,7 +2330,7 @@ a:focus-visible {
 }
 
 .rules-grid {
-  margin-top: 1.5rem;
+  margin-top: 24px;
 }
 
 .rule-card {
@@ -2345,7 +2356,7 @@ a:focus-visible {
 }
 
 .footer-follow-strip {
-  min-height: 124px;
+  min-height: 154px;
   display: flex;
   align-items: center;
   background: #00233D;
@@ -2354,8 +2365,8 @@ a:focus-visible {
 .footer-follow-content {
   display: grid;
   justify-items: center;
-  gap: 0.85rem;
-  padding: 1.7rem 0;
+  gap: 14px;
+  padding: 27px 0;
   text-align: center;
 }
 
@@ -2364,11 +2375,13 @@ a:focus-visible {
 .footer-column h4 {
   margin: 0;
   font-family: var(--font-display);
-  letter-spacing: 0.03em;
+  letter-spacing: normal;
 }
 
 .footer-follow-content h2 {
-  font-size: clamp(2.2rem, 3.8vw, 3.7rem);
+  font-size: 45px;
+  line-height: 45px;
+  font-weight: 600;
   color: var(--white);
 }
 
@@ -2376,7 +2389,7 @@ a:focus-visible {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.65rem;
+  gap: 10px;
 }
 
 .footer-social-item {
@@ -2529,30 +2542,33 @@ a:focus-visible {
 
 .footer-newsletter-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 390px);
+  grid-template-columns: minmax(0, 1fr) 447px;
   gap: 2rem;
   align-items: center;
   padding: 2rem 0;
 }
 
 .footer-newsletter-copy h3 {
-  font-size: clamp(2rem, 3vw, 3.2rem);
+  font-size: 45px !important;
+  line-height: 45px !important;
+  font-weight: 600 !important;
   color: var(--white);
 }
 
 .footer-newsletter-copy p {
-  margin: 0.55rem 0 0;
+  margin: 9px 0 0;
   color: rgba(231, 239, 233, 0.74);
 }
 
 .footer-newsletter-form {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 120px;
+  grid-template-columns: 313px 134px;
   gap: 0;
 }
 
 .footer-newsletter-form input {
-  min-height: 48px;
+  width: 313px;
+  min-height: 54px;
   border: 0;
   border-radius: 0;
   background: #ffffff;
@@ -2571,8 +2587,8 @@ a:focus-visible {
 }
 
 .footer-newsletter-submit {
-  min-height: 48px;
-  width: 100%;
+  width: 134px;
+  min-height: 54px;
   padding-inline: 1rem;
   line-height: 1;
 }
@@ -2584,8 +2600,8 @@ a:focus-visible {
 
 .footer-newsletter-note {
   grid-column: 1 / -1;
-  margin: 0.75rem 0 0;
-  font-size: 0.88rem;
+  margin: 12px 0 0;
+  font-size: 1rem;
   color: rgba(231, 239, 233, 0.7);
 }
 
@@ -2607,7 +2623,7 @@ a:focus-visible {
   gap: 70px;
   align-items: center;
   flex-wrap: wrap;
-  padding: 1.8rem 0;
+  padding: 29px 0;
 }
 
 .footer-brand-mark,
@@ -2647,16 +2663,16 @@ a:focus-visible {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 0.8rem 1.8rem;
+  gap: 13px 29px;
   width: 100%;
-  padding: 1.15rem 0;
+  padding: 18px 0;
 }
 
 .footer-link-cloud a {
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: normal;
   color: var(--white);
 }
 
@@ -2676,8 +2692,8 @@ a:focus-visible {
 .footer-columns-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.5rem;
-  padding: 1.8rem 0;
+  gap: 24px;
+  padding: 29px 0;
 }
 
 .footer-column {
@@ -2685,14 +2701,14 @@ a:focus-visible {
 }
 
 .footer-column h4 {
-  margin-bottom: 0.9rem;
+  margin-bottom: 14px;
   color: var(--lime);
   font-size: 1.5rem;
 }
 
 .footer-column-links {
   display: grid;
-  gap: 0.5rem;
+  gap: 8px;
 }
 
 .footer-column-links a,
@@ -2709,7 +2725,7 @@ a:focus-visible {
   justify-items: center;
   gap: 1rem;
   width: 100%;
-  padding: 1.2rem 0 1.6rem;
+  padding: 19px 0 26px;
 }
 
 .footer-legal-links {
@@ -2742,7 +2758,7 @@ a:focus-visible {
 }
 
 .footer-social-row.is-small {
-  gap: 0.65rem;
+  gap: 10px;
 }
 
 .footer-bottom-bar {
@@ -2756,7 +2772,7 @@ a:focus-visible {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: 0.9rem 0;
+  padding: 14px 0;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.2;
@@ -2793,11 +2809,11 @@ a:focus-visible {
 .legal-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.25rem;
+  gap: 20px;
 }
 
 .legal-card {
-  padding: 1.5rem;
+  padding: 24px;
   border-radius: 0;
   background:
     linear-gradient(180deg, #00233D 0%, #00314F 100%);
@@ -2807,12 +2823,12 @@ a:focus-visible {
 }
 
 .legal-card h3 {
-  margin: 0 0 0.85rem;
-  font-size: 1.45rem;
+  margin: 0 0 14px;
+  font-size: 1.5rem;
 }
 
 .legal-card p + p {
-  margin-top: 0.85rem;
+  margin-top: 14px;
 }
 
 @media (max-width: 1080px) {
@@ -2888,10 +2904,10 @@ a:focus-visible {
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 0.8rem 1rem;
-    min-height: 116px;
-    padding-top: 0.75rem;
-    padding-bottom: 0.85rem;
+    gap: 8px 1rem;
+    min-height: 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
   }
 
   .brand {
@@ -2899,12 +2915,14 @@ a:focus-visible {
     width: 100%;
     justify-content: center;
     margin-left: 0;
+    min-height: 0;
   }
 
   .brand-logo {
-    width: min(88vw, 360px);
+    width: 129px;
     height: auto;
-    max-width: min(88vw, 360px);
+    max-width: 129px;
+    margin-left: 0;
   }
 
   .menu-toggle {
@@ -2936,14 +2954,14 @@ a:focus-visible {
     width: min(340px, 86vw);
     max-width: 340px;
     height: 100dvh;
-    padding: 5.4rem 1rem 1rem;
+    padding: 86px 1rem 1rem;
     background: var(--header-bg);
     border: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: none;
     flex-direction: column;
     align-items: stretch;
-    gap: 0.2rem;
+    gap: 3px;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -2953,7 +2971,7 @@ a:focus-visible {
 
   .mobile-session-panel {
     display: grid;
-    gap: 0.25rem;
+    gap: 4px;
     margin-top: auto;
     padding-top: 1rem;
     border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -2990,7 +3008,7 @@ a:focus-visible {
   .dropdown {
     position: static;
     display: none;
-    margin-top: 0.5rem;
+    margin-top: 8px;
   }
 
   .nav-item.open .dropdown {
@@ -2998,7 +3016,7 @@ a:focus-visible {
   }
 
   .quick-access {
-    margin-top: 1.5rem;
+    margin-top: 24px;
   }
 
   .hero {
@@ -3009,12 +3027,12 @@ a:focus-visible {
     width: min(100%, calc(100% - 2rem));
     max-width: none;
     margin: 0 auto;
-    padding: 4rem 1rem 2.4rem;
+    padding: 4rem 1rem 38px;
     min-height: auto;
   }
 
   .landing-main {
-    padding-top: 2.5rem;
+    padding-top: 40px;
   }
 
   .landing-z-section.is-reversed .landing-z-media,
@@ -3047,11 +3065,12 @@ a:focus-visible {
 
   .footer-newsletter-form {
     grid-template-columns: 1fr;
-    gap: 0.65rem;
+    gap: 10px;
   }
 
   .footer-newsletter-form input,
   .footer-newsletter-submit {
+    width: 100%;
     border-radius: 0;
   }
 
@@ -3087,18 +3106,18 @@ a:focus-visible {
   }
 
   .landing-z-copy {
-    padding: 1.4rem 1rem 1.6rem;
+    padding: 22px 1rem 26px;
   }
 
   .landing-z-copy h2,
   .landing-sponsors-head h2 {
-    font-size: clamp(2.15rem, 9vw, 3.2rem);
+    font-size: clamp(2rem, 9vw, 3rem);
   }
 
   .landing-z-body,
   .landing-sponsors-head p,
   .landing-sponsor-card p {
-    font-size: 0.95rem;
+    font-size: 1rem;
     line-height: 1.62;
   }
 
@@ -3107,7 +3126,7 @@ a:focus-visible {
   }
 
   .hero-kicker {
-    font-size: clamp(1.54rem, 7.3vw, 2.27rem);
+    font-size: clamp(1.5rem, 7.5vw, 2.5rem);
   }
 
   .hero {
@@ -3121,18 +3140,18 @@ a:focus-visible {
   .league-hero-layout {
     width: min(100%, calc(100% - 2rem));
     padding: 2rem 1rem 0;
-    gap: 1.4rem;
+    gap: 22px;
   }
 
   .league-hero-layout--landing {
     min-height: auto;
-    padding-top: 2.8rem;
-    padding-bottom: 2.4rem;
+    padding-top: 45px;
+    padding-bottom: 38px;
     align-content: start;
   }
 
   .league-hero-layout--with-strava {
-    padding-bottom: 2.75rem;
+    padding-bottom: 44px;
   }
 
   .league-hero-copy,
@@ -3142,35 +3161,35 @@ a:focus-visible {
   }
 
   .league-hero-eyebrow {
-    font-size: clamp(1.54rem, 7.3vw, 2.27rem);
+    font-size: clamp(1.5rem, 7.5vw, 2.5rem);
   }
 
   .hero-copy h1.hero-headline {
     width: max-content;
     max-width: none;
-    font-size: clamp(2.64rem, 11vw, 3.85rem);
+    font-size: clamp(2.5rem, 11vw, 4rem);
   }
 
   .league-hero-title {
-    font-size: clamp(1.95rem, 9vw, 2.8rem);
+    font-size: clamp(2rem, 9vw, 3rem);
     line-height: 0.9;
   }
 
   .hero-divider {
     width: 96px;
     height: 4px;
-    margin: 1.15rem 0 1.2rem;
+    margin: 18px 0 19px;
   }
 
   .hero-support {
     max-width: 100%;
-    font-size: 0.84rem;
+    font-size: 1rem;
     line-height: 1.28;
   }
 
   .league-hero-lead {
     max-width: 100%;
-    font-size: 0.84rem;
+    font-size: 1rem;
     line-height: 1.28;
   }
 
@@ -3186,7 +3205,7 @@ a:focus-visible {
   .league-strava-badge {
     position: static;
     padding: 0;
-    margin-top: 0.35rem;
+    margin-top: 6px;
     justify-self: start;
   }
 
@@ -3222,11 +3241,11 @@ a:focus-visible {
   }
 
   .member-zone-card {
-    padding-inline: 1.1rem;
+    padding-inline: 18px;
   }
 
   .member-zone-divider {
-    margin-inline: -1.1rem;
+    margin-inline: -18px;
   }
 
   .member-zone-status-actions {
@@ -3243,13 +3262,13 @@ a:focus-visible {
   }
 
   .ranking-controls {
-    gap: 0.75rem;
+    gap: 12px;
   }
 
   .ranking-tabs {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.6rem;
+    gap: 10px;
     flex: 0 0 auto;
   }
 
@@ -3266,24 +3285,24 @@ a:focus-visible {
   .tab-button {
     flex: 1 1 100%;
     min-width: 0;
-    padding: 0.75rem 0.7rem;
+    padding: 12px 11px;
     min-height: 48px;
-    font-size: 0.96rem;
+    font-size: 1rem;
     line-height: 1;
   }
 
   .period-option,
   .gender-option {
     min-width: 0;
-    padding: 0.75rem 0.6rem;
+    padding: 12px 10px;
     min-height: 48px;
-    font-size: 0.94rem;
-    letter-spacing: 0.03em;
+    font-size: 1rem;
+    letter-spacing: normal;
   }
 
   .panel-intro {
-    gap: 0.25rem;
-    margin-bottom: 0.85rem;
+    gap: 4px;
+    margin-bottom: 14px;
   }
 
   .table-shell {
@@ -3312,7 +3331,7 @@ a:focus-visible {
 
   .ranking-table tbody {
     display: grid;
-    gap: 0.85rem;
+    gap: 14px;
   }
 
   .ranking-table tbody tr {
@@ -3322,7 +3341,7 @@ a:focus-visible {
       "position athlete"
       "metric metric"
       "points points";
-    gap: 0.75rem 0.85rem;
+    gap: 12px 14px;
     padding: 1rem;
     border: 1px solid rgba(208, 247, 0, 0.18);
     background: linear-gradient(180deg, #001A2D 0%, #001A2D 100%);
@@ -3349,7 +3368,7 @@ a:focus-visible {
   .metric-cell,
   .points-cell {
     display: grid;
-    gap: 0.35rem;
+    gap: 6px;
     text-align: left;
   }
 
@@ -3365,9 +3384,9 @@ a:focus-visible {
   .metric-cell::before,
   .points-cell::before {
     font-family: var(--font-teko);
-    font-size: 0.92rem;
+    font-size: 1rem;
     font-weight: 400;
-    letter-spacing: 0.05em;
+    letter-spacing: normal;
     line-height: 1;
     text-transform: uppercase;
     color: rgba(231, 239, 233, 0.62);
@@ -3383,7 +3402,7 @@ a:focus-visible {
 
   .athlete-cell {
     align-items: center;
-    gap: 0.75rem;
+    gap: 12px;
   }
 
   .athlete-avatar,
@@ -3393,7 +3412,7 @@ a:focus-visible {
   }
 
   .athlete-copy {
-    gap: 0.2rem;
+    gap: 3px;
   }
 
   .metric-pill {
@@ -3402,7 +3421,7 @@ a:focus-visible {
     white-space: normal;
     text-align: left;
     line-height: 1.2;
-    padding: 0.55rem 0.7rem;
+    padding: 9px 11px;
   }
 
   .position-badge {

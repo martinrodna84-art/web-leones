@@ -42,7 +42,7 @@ export function SiteFooter() {
     <footer className="site-footer">
       <section className="footer-follow-strip">
         <div className="footer-section-inner footer-follow-content">
-          <h2>!Siguenos!</h2>
+          <h2>¡Síguenos!</h2>
           <div className="footer-social-row" aria-label="Redes sociales del club">
             {footerSocialLinks.map((link) => (
               <FooterSocialItem key={link.label} href={link.href} label={link.label} />
@@ -135,7 +135,7 @@ export function SiteFooter() {
         <div className="footer-section-inner footer-bottom-content">
           <p className="social-copy footer-bottom-primary">powered by canal3networks.com</p>
           <p className="social-copy footer-bottom-secondary">
-            Copyright {"\u00A9"} 2026. Los Leones del Trail Todos los derechos reservados.
+                Copyright {"\u00A9"} 2026. Los Leones del Trail. Todos los derechos reservados.
           </p>
         </div>
       </section>

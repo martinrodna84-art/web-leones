@@ -126,10 +126,10 @@ export function HomeHeader({ member, children }: HomeHeaderProps) {
       <nav className={`main-nav ${teko.className}`}>
         <Link className="brand" href="/">
           <Image
-            src="/assets/logos/logo-header.svg"
+            src="/assets/logos/logo-main-header.svg"
             alt="Logo de Los Leones del Trail"
-            width={360}
-            height={60}
+            width={78}
+            height={48}
             className="brand-logo"
             priority
             unoptimized
