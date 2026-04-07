@@ -745,6 +745,21 @@ a:focus-visible {
   margin-right: auto;
 }
 
+@media (min-width: 821px) {
+  .hero {
+    min-height: calc(80px + 760px);
+    padding-bottom: 0;
+  }
+
+  .hero-layout {
+    min-height: 760px;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 170px 3rem 2rem 370px;
+  }
+}
+
 .league-hero-copy--landing {
   max-width: min(560px, 100%);
 }
@@ -753,7 +768,7 @@ a:focus-visible {
   margin: 0;
   color: var(--white);
   font-family: var(--font-teko);
-  font-size: clamp(1.78rem, 3.25vw, 2.85rem);
+  font-size: 50px;
   font-weight: 300;
   line-height: 0.95;
   letter-spacing: 0.01em;
@@ -801,6 +816,10 @@ a:focus-visible {
 .hero-copy h1,
 .hero-copy h2 {
   margin: 0;
+}
+
+.hero-copy h1:not(.hero-headline),
+.hero-copy h2 {
   font-size: clamp(3.2rem, 8vw, 5.6rem);
   line-height: 0.92;
 }
@@ -866,14 +885,14 @@ a:focus-visible {
   height: auto;
 }
 
-.hero-headline {
+.hero-copy h1.hero-headline {
   display: block;
   margin-top: 0.2rem;
   width: max-content;
   max-width: none;
   color: var(--lime);
   font-family: var(--font-teko);
-  font-size: clamp(3.45rem, 6.9vw, 5.1rem);
+  font-size: 80px;
   font-weight: 600;
   letter-spacing: 0.02em;
   line-height: 0.84;
@@ -905,10 +924,11 @@ a:focus-visible {
 
 .hero-support {
   margin: 0;
-  max-width: 31ch;
+  width: min(460px, 100%);
+  max-width: 460px;
   color: var(--white);
   font-family: var(--font-arboria-book), var(--font-arboria-book-fallback);
-  font-size: clamp(0.95rem, 1.62vw, 1.18rem);
+  font-size: 19px;
   font-weight: 400;
   line-height: 1.22;
   letter-spacing: -0.01em;
@@ -2985,6 +3005,14 @@ a:focus-visible {
     padding-bottom: 2rem;
   }
 
+  .hero-layout {
+    width: min(100%, calc(100% - 2rem));
+    max-width: none;
+    margin: 0 auto;
+    padding: 4rem 1rem 2.4rem;
+    min-height: auto;
+  }
+
   .landing-main {
     padding-top: 2.5rem;
   }
@@ -3117,7 +3145,7 @@ a:focus-visible {
     font-size: clamp(1.54rem, 7.3vw, 2.27rem);
   }
 
-  .hero-headline {
+  .hero-copy h1.hero-headline {
     width: max-content;
     max-width: none;
     font-size: clamp(2.64rem, 11vw, 3.85rem);
