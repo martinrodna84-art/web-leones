@@ -82,14 +82,12 @@ const navGroups = [
 
 export function HomeHeader({ member, children }: HomeHeaderProps) {
   const pathname = usePathname();
-  const navRef = useRef<HTMLElement | null>(null);
   const mobileMenuMotionTimeoutRef = useRef<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuMotionEnabled, setMobileMenuMotionEnabled] = useState(false);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [sessionMenuOpen, setSessionMenuOpen] = useState(false);
   const [currentHash, setCurrentHash] = useState("");
-  const [heroMediaTop, setHeroMediaTop] = useState(80);
   const hasHero = children != null;
 
   useEffect(() => {
@@ -101,43 +99,6 @@ export function HomeHeader({ member, children }: HomeHeaderProps) {
     window.addEventListener("hashchange", syncHash);
     return () => window.removeEventListener("hashchange", syncHash);
   }, [pathname]);
-
-  useEffect(() => {
-    if (!hasHero) {
-      return;
-    }
-
-    const nav = navRef.current;
-
-    if (!nav) {
-      return;
-    }
-
-    const navElement = nav;
-    let frameId = 0;
-
-    function syncNavHeight() {
-      cancelAnimationFrame(frameId);
-      frameId = requestAnimationFrame(() => {
-        const nextHeight = Math.round(navElement.getBoundingClientRect().height);
-        setHeroMediaTop((current) => (current === nextHeight ? current : nextHeight));
-      });
-    }
-
-    syncNavHeight();
-
-    const resizeObserver =
-      typeof ResizeObserver === "undefined" ? null : new ResizeObserver(syncNavHeight);
-
-    resizeObserver?.observe(navElement);
-    window.addEventListener("resize", syncNavHeight);
-
-    return () => {
-      cancelAnimationFrame(frameId);
-      resizeObserver?.disconnect();
-      window.removeEventListener("resize", syncNavHeight);
-    };
-  }, [hasHero]);
 
   useEffect(() => {
     return () => {
@@ -204,39 +165,8 @@ export function HomeHeader({ member, children }: HomeHeaderProps) {
   }
 
   return (
-    <header
-      className={hasHero ? "hero" : "home-header-shell"}
-      id="inicio"
-      style={hasHero ? { background: "none" } : undefined}
-    >
-      {hasHero ? (
-        <div
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            top: `${heroMediaTop}px`,
-            right: 0,
-            bottom: 0,
-            left: 0,
-            zIndex: 0,
-            overflow: "hidden",
-            pointerEvents: "none",
-          }}
-        >
-          <Image
-            src="/assets/hero/hero-landing.webp"
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            style={{
-              objectFit: "cover",
-              objectPosition: "50% 0%",
-            }}
-          />
-        </div>
-      ) : null}
-      <nav ref={navRef} className={`main-nav ${teko.className}`}>
+    <header className={hasHero ? "hero" : "home-header-shell"} id="inicio">
+      <nav className={`main-nav ${teko.className}`}>
         <Link className="brand" href="/">
           <Image
             src="/assets/logos/logo-main-header.svg"
