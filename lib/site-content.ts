@@ -35,8 +35,8 @@ export const footerColumns = [
   {
     title: "El club",
     links: [
-      { href: "/#informacion", label: "Quienes somos" },
-      { href: "/#planes", label: "Entrenamientos" },
+      { href: "/club#informacion", label: "Quienes somos" },
+      { href: "/club#planes", label: "Entrenamientos" },
       { href: "/liga-felina/registro", label: "Alta de socios" },
     ],
   },

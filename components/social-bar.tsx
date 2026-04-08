@@ -17,11 +17,11 @@ export function SocialBar() {
         {socialBarLinks.map((link) =>
           link.href ? (
             <a key={link.label} href={link.href} target="_blank" rel="noreferrer" aria-label={link.label} title={link.label}>
-              <SocialIcon label={link.label} />
+              <SocialIcon label={link.label} variant="socialBar" />
             </a>
           ) : (
             <span key={link.label} aria-label={`${link.label} proximamente`} title={`${link.label} proximamente`}>
-              <SocialIcon label={link.label} />
+              <SocialIcon label={link.label} variant="socialBar" />
             </span>
           ),
         )}

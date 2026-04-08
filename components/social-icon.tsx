@@ -1,9 +1,22 @@
 type SocialIconProps = {
   label: string;
   className?: string;
+  variant?: "default" | "socialBar";
 };
 
-export function SocialIcon({ label, className = "social-icon" }: SocialIconProps) {
+const socialBarTransforms: Partial<Record<SocialIconProps["label"], string>> = {
+  YouTube: "translate(288.1 256) scale(0.9843 1) translate(-288.1 -256)",
+  Instagram: "translate(224.25 255.9) scale(1.1422 1.1425) translate(-224.25 -255.9)",
+  Facebook: "translate(159.85 256) scale(0.9361 1) translate(-159.85 -256)",
+  X: "translate(224.9 256) scale(1.1126 1.1487) translate(-224.9 -256)",
+  Strava: "translate(191.6 256) scale(1.017 1) translate(-191.6 -256)",
+};
+
+export function SocialIcon({
+  label,
+  className = "social-icon",
+  variant = "default",
+}: SocialIconProps) {
   const variantClass = (() => {
     switch (label) {
       case "YouTube":
@@ -57,6 +70,9 @@ export function SocialIcon({ label, className = "social-icon" }: SocialIconProps
     return null;
   }
 
+  const svgStyle = variant === "socialBar" ? { width: "15px", height: "15px" } : undefined;
+  const pathTransform = variant === "socialBar" ? socialBarTransforms[label] : undefined;
+
   return (
     <svg
       className={`${className} ${variantClass}`.trim()}
@@ -65,8 +81,9 @@ export function SocialIcon({ label, className = "social-icon" }: SocialIconProps
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       focusable="false"
+      style={svgStyle}
     >
-      <path d={icon.path} />
+      <path d={icon.path} transform={pathTransform} />
     </svg>
   );
 }
